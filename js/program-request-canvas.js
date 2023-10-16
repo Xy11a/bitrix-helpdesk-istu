@@ -45,8 +45,6 @@ async function getPCFromCabinetJSON(cabinet) {
 ////////////ASYNC/////////////////////////////
 
 cabinetConfirm1.addEventListener("click", async function () {
-    bt2.disabled = true
-    bt3.disabled = true
     cabinetConfirm1.disabled = true
     divTable1.classList.remove("disabled")
 
@@ -68,8 +66,6 @@ cabinetConfirm1.addEventListener("click", async function () {
     loadPC(pcListJSON, pcInputTab1, pcLayer);
 })
 cabinetConfirm2.addEventListener("click", async function() {
-    bt1.disabled = true
-    bt3.disabled = true
     cabinetConfirm2.disabled = true
     divTable2.classList.remove("disabled")
 
@@ -91,8 +87,6 @@ cabinetConfirm2.addEventListener("click", async function() {
     loadPC(pcListJSON, pcInputTab2, pcLayer);
 })
 cabinetConfirm3.addEventListener("click", async function() {
-    bt1.disabled = true
-    bt2.disabled = true
     cabinetConfirm3.disabled = true
     divTable3.classList.remove("disabled")
 
@@ -113,13 +107,6 @@ cabinetConfirm3.addEventListener("click", async function() {
     createBackground(cabinet, backgroundLayer)
     loadPC(pcListJSON, pcInputTab3, pcLayer);
 })
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +201,7 @@ function loadPC(pcJSON, tablePC, pcLayer) {
                     let pc = "<td>ПК-" + (pcArray[j][0] + 1) + "</td>"
                     let ip = " <td><label>IP:</label><input class=\"w-100\" type=\"text\" name=\"ip-" + j + "\" value='" + pcArray[j][2] + "' readonly></td>"
                     let mac = "<td><label>MAC:</label><input class=\"w-100\" type=\"text\" name=\"mac-" + j + "\" value='" + pcArray[j][3] + "'  readonly></td>"
-                    let inv = "<td><label>Инвертарный номер:</label><input class=\"w-100\" type=\"text\" name=\"inventoryId-" + j + "\" value='" + pcArray[j][4] + "' readonly></td>"
+                    let inv = "<td><label>Инвентарный номер:</label><input class=\"w-100\" type=\"text\" name=\"inventoryId-" + j + "\" value='" + pcArray[j][4] + "' readonly></td>"
                     let tr = document.createElement('tr')
                     tr.innerHTML += pc + ip + mac + inv;
                     tablePC.appendChild(tr)

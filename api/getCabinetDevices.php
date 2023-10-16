@@ -1,10 +1,8 @@
 <?php
-$properties = file("application.properties");
-if (preg_match('/"([^"]+)"/', $properties[0], $m)) $servername = $m[1];
-if (preg_match('/"([^"]+)"/', $properties[1], $m)) $username = $m[1];
-if (preg_match('/"([^"]+)"/', $properties[2], $m)) $password = $m[1];
-if (preg_match('/"([^"]+)"/', $properties[3], $m)) $dbname = $m[1];
-if (preg_match('/"([^"]+)"/', $properties[4], $m)) $bitrixDB = $m[1];
+$servername = "localhost";
+$username = "DB2022_xyla";
+$password = "DB2022_xyla";
+$dbname = "DB2022_xyla";
 
 
 $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -13,7 +11,7 @@ $cabinet = $_GET['cabinet'];
 
 
 
-$sql = "SELECT * FROM Computers WHERE cabinet='".$cabinet."';";
+$sql = "SELECT * FROM Devices WHERE cabinet='".$cabinet."';";
 $result = mysqli_query($conn, $sql);
 
 $arr = array();
