@@ -1,5 +1,0 @@
-servername="localhost"
-username = "login";
-password = "password";
-dbname = "dbname";
-bitrixDBname = "bitrixDBname"
