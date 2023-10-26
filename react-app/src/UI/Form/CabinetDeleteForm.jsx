@@ -1,16 +1,14 @@
 import React from 'react';
 import CabinetService from "../../API/CabinetService";
 
-const CabinetDeleteForm = ({cabinet,allCabinets,setCabinetData}) => {
+const CabinetDeleteForm = ({cabinet,deleteCabinet}) => {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
+            deleteCabinet(cabinet)
             CabinetService.deleteCabinet({number: cabinet.number, cabinetLink: cabinet.cabinetLink})
 
-            let filterCabinets = allCabinets.filter((cab)=> cab.number !== cabinet.number)
-            console.log(allCabinets)
-            console.log(filterCabinets)
-            setCabinetData(CabinetService.getAllCabinets())
+
 
 
         }} className='border border-black border-opacity-50 rounded-3 px-2 py-2'>

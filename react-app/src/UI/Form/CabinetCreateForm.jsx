@@ -1,46 +1,49 @@
 import React, {useState} from 'react';
 import CabinetService from "../../API/CabinetService";
-import axios from "axios";
 
-const CabinetCreateForm = ({allCabinets, setModal}) => {
+const CabinetCreateForm = ({cabinetData, setModal, createCabinet}) => {
 
     const [cabName, setCabName] = useState("")
     const [corpus, setCorpus] = useState("А")
-    const [fileSVG,setFileSVG] = useState(null)
+    const [fileSVG, setFileSVG] = useState(null)
 
     let checkNumber = false;
     let checkFileType = false;
 
 
-    function submitCabinet(e,corpus,cabName) {
+    function submitCabinet(e, corpus, cabName) {
         e.preventDefault();
-
         let file = checkFileType ? fileSVG : null
-        setModal(false)
+        if (setModal !== undefined){ setModal(false)}
 
-        if(checkNumber === true) {
-            let number = {number: corpus+cabName}
+
+
+        if (checkNumber === true) {
+            createCabinet({number: corpus + cabName, cabinetLink: "test", deviceCount: "test"})
+
+            let number = {number: corpus + cabName}
             CabinetService.addCabinet(number)
-                .then(()=>{
+                .then(() => {
                     let formData = new FormData()
                     formData.append("file", file);
-                    formData.append("cabinet", corpus+cabName)
-                    console.log(formData.get("cabinet"))
+                    formData.append("cabinet", corpus + cabName)
                     CabinetService.addSVG(formData)
                 })
         }
+
 
     }
 
 
     return (
-        <form onSubmit={(e)=> submitCabinet(e,corpus,cabName,fileSVG)} id='create-cab-form' className='border border-black border-opacity-50 rounded-3 px-3 py-2'>
+        <form onSubmit={(e) => submitCabinet(e, corpus, cabName, fileSVG)} id='create-cab-form'
+              className='border border-black border-opacity-50 rounded-3 px-3 py-2'>
             <h5 className='text-center my-0'>Создать кабинет</h5>
 
             <label>Кабинет:</label>
             <div className="input-group ">
                 <select id="select-corpus" className="form-select w-25" defaultValue={corpus} onChange={(e) => {
-                    setCorpus(this.value)
+                    setCorpus(e.target.value);
                 }}>
                     <option value="А">A</option>
                     <option value="Б">Б</option>
@@ -58,11 +61,13 @@ const CabinetCreateForm = ({allCabinets, setModal}) => {
             </div>
 
 
-            {checkInput(corpus, cabName, allCabinets)}
+            {checkInput(corpus, cabName)}
 
 
             <label>План SVG (Необязательно):</label>
-            <input onChange={(e)=> {setFileSVG(e.target.files[0]);}} className='form-control' type={"file"} name={"plan"} accept=".svg" placeholder="Загрузите SVG"/>
+            <input onChange={(e) => {
+                setFileSVG(e.target.files[0]);
+            }} className='form-control' type={"file"} name={"plan"} accept=".svg" placeholder="Загрузите SVG"/>
 
             {checkFile(fileSVG)}
 
@@ -74,14 +79,14 @@ const CabinetCreateForm = ({allCabinets, setModal}) => {
     );
 
 
-    function checkInput(corpus, cabName, allCabinets) {
+    function checkInput(corpus, cabName) {
         let input = corpus + cabName;
         if (cabName === "") {
             checkNumber = false;
             return "";
         }
 
-        let cabinetExist = allCabinets.find((cabinet) => cabinet.number === input)
+        let cabinetExist = cabinetData.find((cabinet) => cabinet.number === input)
         if (cabinetExist !== undefined) {
             checkNumber = false;
             return <div className="bg-warning my-1 p-2 rounded-3">Кабинет уже существует</div>
@@ -95,11 +100,12 @@ const CabinetCreateForm = ({allCabinets, setModal}) => {
         return <div className="bg-success text-white bg-opacity-75 my-1 p-2 rounded-3">ОК</div>;
     }
 
-    function checkFile(file){
-        if(file === null) return "";
-        if(!file.name.includes(".svg")){
+    function checkFile(file) {
+        if (file === null) return "";
+        if (!file.name.includes(".svg")) {
             checkFileType = false
-            return <div className="bg-warning my-1 p-2 rounded-3">Неверный формат файла. При создании кабинета будет загружен план по умолчанию</div>
+            return <div className="bg-warning my-1 p-2 rounded-3">Неверный формат файла. При создании кабинета будет
+                загружен план по умолчанию</div>
         }
         checkFileType = true
         return <div className="bg-success text-white bg-opacity-75 my-1 p-2 rounded-3">ОК</div>;

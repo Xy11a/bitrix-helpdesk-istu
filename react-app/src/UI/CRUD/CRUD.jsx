@@ -4,6 +4,7 @@ import SearchList from "./SearchList/SearchList";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import 'react-tooltip/dist/react-tooltip.css'
 import CabinetService from "../../API/CabinetService";
+import CabinetLayout from "../CabinetLayout/CabinetLayout";
 
 let cabinetsJson = await CabinetService.getAllCabinets()
 let jsonType = {
@@ -16,24 +17,45 @@ let jsonType = {
 
 const CRUD = () => {
 
-    const [searchInput, setSearchInput] = useState("");
     const [selectedItem, setSelectedItem] = useState("")
-    const [createCabModal, setCabModal] = useState(false)
     const [cabinetData, setCabinetData] = useState(cabinetsJson)
+
+    const createCabinet = (newCabinet) => {
+        setCabinetData([...cabinetData,newCabinet])
+    }
+
+    const deleteCabinet = (cabinetToDelete) => {
+        setCabinetData(cabinetData.filter(c => c.number !== cabinetToDelete.number))
+        setSelectedItem("")
+    }
+
+    const readCabinets = async () => {
+        setCabinetData(await CabinetService.getAllCabinets())
+    }
+
+    const updateCabinet = (newCabinetName) => {
+
+    }
 
 
     return (
         <div className='w-100 h-100'>
             <div className='d-flex align-items-stretch justify-content-between'>
                 <Block className='w-75  p-2 border border-dark bg-white rounded-3 overflow-x-hidden'>
-                    <SearchList headers={jsonType.headers} data={cabinetData} setCabinetData={setCabinetData} searchInput={searchInput} setSearchInput={setSearchInput} setSelectedItem={setSelectedItem} createCabModal={createCabModal} setCabModal={setCabModal}/>
+                    <SearchList headers={jsonType.headers} createCabinet={createCabinet} list={cabinetData} setSelectedItem={setSelectedItem} />
                 </Block>
                 <Block className='w-25  p-1 border border-dark bg-white rounded-3'>
-                    <ControlPanel allCabinets={cabinetData} cabinet={selectedItem} setCabinetData={setCabinetData}/>
+                    <ControlPanel cabinetData={cabinetData} selectedCabinet={selectedItem} createCabinet={createCabinet} deleteCabinet={deleteCabinet} />
                 </Block>
             </div>
+            <CabinetLayout selectedCabinet={selectedItem} updateCabinets={readCabinets} />
+
             <Block>
-                <div className=" d-flex flex-column justify-content-center align-items-center">Very dood</div>
+                <div>TODO:</div>
+                <div>1. Баг создания пустого кабинета</div>
+                <div>2. Регулярное выражение</div>
+                <div>3. Обновление после создание кабинета</div>
+                <div>4. Добавить succes-error окна после действий с сервером </div>
             </Block>
         </div>
     );

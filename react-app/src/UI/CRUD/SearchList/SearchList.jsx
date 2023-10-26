@@ -1,29 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import Icon from "../../Icon/Icon";
 import SearchListElement from "./SearchListElement";
 import ModalFrame from "../../Modal/ModalFrame";
-import CreateCabinet from "../../Pages/CreateCabinet";
 import CabinetCreateForm from "../../Form/CabinetCreateForm";
 
-const SearchList = ({headers, data, searchInput, setSearchInput, setSelectedItem, setCabModal,createCabModal}) => {
+const SearchList = ({headers, list, createCabinet, setSelectedItem,sortFunction}) => {
 
-    const [listData, setListData] = useState(data)
 
-    const filterList = (searchText, list) => {
-        if (!searchText) {
-            return list
-        }
+    const [createCabModal, setCabModal] = useState(false)
+    const [searchInput, setSearchInput] = useState("");
 
-        return list.filter(({number}) => number.toLowerCase().includes(searchText.toLowerCase()))
-    }
+    const sortedCabinets = useMemo(()=>{
+        return [...list].sort(sortFunction());
+    },[list])
 
-    useEffect(() => {
-        const Debounce = setTimeout(() => {
-            const filteredList = filterList(searchInput, data);
-            setListData(filteredList)
-        }, 150)
-        return () => clearTimeout(Debounce)
-    }, [searchInput])
+    const sortedAndSearchCabinets = useMemo(()=>{
+        return sortedCabinets.filter(c => c.number.toLowerCase().includes(searchInput.toLowerCase()))
+    }, [searchInput,sortedCabinets])
+
+
 
 
     return (
@@ -34,7 +29,7 @@ const SearchList = ({headers, data, searchInput, setSearchInput, setSelectedItem
                        type={"text"} onChange={(e) => {setSearchInput(e.target.value);
                 }}/>
                 <ModalFrame visible={createCabModal} setVisible={setCabModal}>
-                    <CabinetCreateForm allCabinets={data} setModal={setCabModal}/>
+                    <CabinetCreateForm  cabinetData={list} createCabinet={createCabinet} setModal={setCabModal}/>
                 </ModalFrame>
                 <button onClick={()=> setCabModal(true)} className='btn btn-primary mx-1 flex-fill'>Добавить</button>
             </div>
@@ -50,7 +45,7 @@ const SearchList = ({headers, data, searchInput, setSearchInput, setSelectedItem
                 <tbody>
                 {
 
-                    listData.length > 0 ? listData.map((el, key) => {
+                    sortedAndSearchCabinets.length > 0 ? sortedAndSearchCabinets.map((el, key) => {
                         return <SearchListElement data={el} key={key} onClick={(e) => {
                             setSelectedItem(el);
                             setSelectionColor(e.target.parentElement)
