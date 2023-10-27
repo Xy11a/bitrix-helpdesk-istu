@@ -1,21 +1,18 @@
 import React, {useMemo, useState} from 'react';
 import Icon from "../../Icon/Icon";
 import SearchListElement from "./SearchListElement";
-import ModalFrame from "../../Modal/ModalFrame";
-import CabinetCreateForm from "../../Form/CabinetCreateForm";
-
-const SearchList = ({headers, list, createCabinet, setSelectedItem,sortFunction}) => {
 
 
-    const [createCabModal, setCabModal] = useState(false)
+const SearchList = ({headers, list, setSelectedItem,sortFunction,filterFunction}) => {
+
     const [searchInput, setSearchInput] = useState("");
 
     const sortedCabinets = useMemo(()=>{
-        return [...list].sort(sortFunction());
+        return [...list].sort(sortFunction);
     },[list])
 
     const sortedAndSearchCabinets = useMemo(()=>{
-        return sortedCabinets.filter(c => c.number.toLowerCase().includes(searchInput.toLowerCase()))
+        return sortedCabinets.filter((item) => filterFunction(item,searchInput))
     }, [searchInput,sortedCabinets])
 
 
@@ -28,10 +25,6 @@ const SearchList = ({headers, list, createCabinet, setSelectedItem,sortFunction}
                 <input className='mx-1 w-75 flex-fill rounded-3' placeholder={"Поиск..."} value={searchInput}
                        type={"text"} onChange={(e) => {setSearchInput(e.target.value);
                 }}/>
-                <ModalFrame visible={createCabModal} setVisible={setCabModal}>
-                    <CabinetCreateForm  cabinetData={list} createCabinet={createCabinet} setModal={setCabModal}/>
-                </ModalFrame>
-                <button onClick={()=> setCabModal(true)} className='btn btn-primary mx-1 flex-fill'>Добавить</button>
             </div>
 
             <table className="border border-black border-opacity-50 w-100 h-100 table table-striped table-hover">
@@ -46,14 +39,14 @@ const SearchList = ({headers, list, createCabinet, setSelectedItem,sortFunction}
                 {
 
                     sortedAndSearchCabinets.length > 0 ? sortedAndSearchCabinets.map((el, key) => {
-                        return <SearchListElement data={el} key={key} onClick={(e) => {
+                        return <SearchListElement headers={headers} data={el} key={key} onClick={(e) => {
+                            console.log(el)
                             setSelectedItem(el);
                             setSelectionColor(e.target.parentElement)
                         }}/>
                     }) : <tr>
                             <td colSpan={3} className="text-center">
-                                <div>Внимание искомые кабинеты не найдены.</div>
-                                <button onClick={()=> setCabModal(true)} className="btn btn-primary">Добавить новый кабинет?</button>
+                                <div>Внимание! Ничего не найдено.</div>
                             </td>
                         </tr>
 

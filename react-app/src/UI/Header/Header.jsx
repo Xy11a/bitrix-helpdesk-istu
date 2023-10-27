@@ -21,11 +21,10 @@ const Header = ({page,setPage}) => {
                             <div className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="e-list.html" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    { ['request-create','request-manage','request-type-list','program-request','account-request','connection-request','maintenance-request'].includes(page) ? <b> Заявки</b> : <>Заявки</>}
+                                    { ['request-create','request-manage','program-request','account-request','connection-request','maintenance-request'].includes(page) ? <b> Заявки</b> : <>Заявки</>}
                                 </a>
                                 <ul className="dropdown-menu">
                                     <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-manage' page={page} setPage={setPage}>Управление активными заявками</HeaderLinkUI>
-                                    <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-type-list' page={page} setPage={setPage}>Виды заявок</HeaderLinkUI>
                                     <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-create' page={page} setPage={setPage}>Создать заявку</HeaderLinkUI>
                                 </ul>
                             </div>

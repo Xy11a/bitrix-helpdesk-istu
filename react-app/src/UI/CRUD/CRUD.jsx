@@ -38,11 +38,18 @@ const CRUD = () => {
     }
 
 
+
     return (
         <div className='w-100 h-100'>
             <div className='d-flex align-items-stretch justify-content-between'>
                 <Block className='w-75  p-2 border border-dark bg-white rounded-3 overflow-x-hidden'>
-                    <SearchList headers={jsonType.headers} createCabinet={createCabinet} list={cabinetData} setSelectedItem={setSelectedItem} />
+                    <SearchList
+                        headers={jsonType.headers}
+                        createCabinet={createCabinet}
+                        list={cabinetData} setSelectedItem={setSelectedItem}
+                        sortFunction={(a,b)=>{return a.number.localeCompare(b.number)}}
+                        filterFunction={(item,searchInput) => {return item.number.toLowerCase().includes(searchInput.toLowerCase())}}
+                    />
                 </Block>
                 <Block className='w-25  p-1 border border-dark bg-white rounded-3'>
                     <ControlPanel cabinetData={cabinetData} selectedCabinet={selectedItem} createCabinet={createCabinet} deleteCabinet={deleteCabinet} />

@@ -1,8 +1,12 @@
 import React from 'react';
 
-const SearchListElement = ({data, ...props}) => {
+const SearchListElement = ({data,headers, ...props}) => {
 
     let dataKeys = Object.keys(data);
+
+    if(dataKeys.length !== headers.length){
+        for (let i = dataKeys.length; i > headers.length; i--) dataKeys.pop()
+    }
 
 
     return (
