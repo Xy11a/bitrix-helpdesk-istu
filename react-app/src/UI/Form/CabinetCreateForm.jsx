@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import CabinetService from "../../API/CabinetService";
 
-const CabinetCreateForm = ({cabinetData, setModal, createCabinet}) => {
+const CabinetCreateForm = ({cabinetData, setModal, createCabinet, updateCabinet}) => {
 
     const [cabName, setCabName] = useState("")
     const [corpus, setCorpus] = useState("А")
@@ -19,7 +19,6 @@ const CabinetCreateForm = ({cabinetData, setModal, createCabinet}) => {
 
 
         if (checkNumber === true) {
-            createCabinet({number: corpus + cabName, cabinetLink: "test", deviceCount: "test"})
 
             let number = {number: corpus + cabName}
             CabinetService.addCabinet(number)
@@ -29,6 +28,7 @@ const CabinetCreateForm = ({cabinetData, setModal, createCabinet}) => {
                     formData.append("cabinet", corpus + cabName)
                     CabinetService.addSVG(formData)
                 })
+            updateCabinet()
         }
 
 

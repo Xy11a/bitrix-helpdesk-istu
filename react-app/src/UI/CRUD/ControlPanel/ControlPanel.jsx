@@ -9,7 +9,7 @@ import {Tooltip} from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css'
 
 
-const ControlPanel = ({cabinetData, createCabinet, deleteCabinet, selectedCabinet}) => {
+const ControlPanel = ({cabinetData, createCabinet, deleteCabinet, selectedCabinet, updateCabinets}) => {
 
     let style = {filter: "invert(100%) sepia(0%) saturate(25%) hue-rotate(70deg) brightness(108%)"}
 
@@ -49,20 +49,20 @@ const ControlPanel = ({cabinetData, createCabinet, deleteCabinet, selectedCabine
             </ToolBar>
 
             <div className=' w-100 h-100'>
-                {setCurrentPanel(panel, selectedCabinet, cabinetData, createCabinet, deleteCabinet)}
+                {setCurrentPanel(panel, selectedCabinet, cabinetData, createCabinet, deleteCabinet, updateCabinets)}
             </div>
         </div>
     );
 };
 
 
-function setCurrentPanel(panel, selCab, cabData, addCab, delCab) {
+function setCurrentPanel(panel, selCab, cabData, addCab, delCab, updateCabinets) {
 
     switch (panel) {
         case "device":
             return selCab !== "" ? <CabinetDeviceMenu cabinet={selCab}/> : <div>Выберите кабинет</div>
         case "create":
-            return <CabinetCreateForm cabinetData={cabData} createCabinet={addCab} />
+            return <CabinetCreateForm cabinetData={cabData} updateCabinet={updateCabinets} createCabinet={addCab} />
         case "edit":
             return selCab !== "" ? <CabinetEditForm cabinet={selCab}/> : <div>Выберите кабинет</div>
         case "delete":

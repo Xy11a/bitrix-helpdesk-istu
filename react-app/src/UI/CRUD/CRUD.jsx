@@ -52,7 +52,7 @@ const CRUD = () => {
                     />
                 </Block>
                 <Block className='w-25  p-1 border border-dark bg-white rounded-3'>
-                    <ControlPanel cabinetData={cabinetData} selectedCabinet={selectedItem} createCabinet={createCabinet} deleteCabinet={deleteCabinet} />
+                    <ControlPanel cabinetData={cabinetData} selectedCabinet={selectedItem} createCabinet={createCabinet} deleteCabinet={deleteCabinet} updateCabinets={readCabinets} />
                 </Block>
             </div>
             <CabinetLayout selectedCabinet={selectedItem} updateCabinets={readCabinets} />
