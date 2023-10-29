@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Block from "../Block/Block";
 import SearchList from "./SearchList/SearchList";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import 'react-tooltip/dist/react-tooltip.css'
-import CabinetService from "../../API/CabinetService";
-import CabinetLayout from "../CabinetLayout/CabinetLayout";
 
 const CRUD = ({data,dataProps,setSelection, CRUDToolBarFunction}) => {
 

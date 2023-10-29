@@ -38,9 +38,6 @@ const CreateCabinetPage = () => {
     }
 
     const crudToolBar = (panel) => {
-
-
-
         switch (panel) {
             case "create":
                 return <CabinetCreateForm cabinetData={cabinetData} createCabinet={createCabinet} readCabinets={readCabinets} />
@@ -72,10 +69,12 @@ const CreateCabinetPage = () => {
 
             <Block>
                 <div>TODO:</div>
-                <div>1. Баг создания пустого кабинета</div>
+                <div><s>1. Баг создания пустого кабинета</s></div>
                 <div>2. Регулярное выражение</div>
-                <div>3. Обновление после создание кабинета</div>
+                <div><s>3. Обновление после создание кабинета</s></div>
                 <div>4. Добавить success-error окна после действий с сервером</div>
+                <div>5. Добавить редактор кабинета</div>
+                <div>6. Добавить устройство</div>
             </Block>
 
         </div>

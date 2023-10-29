@@ -28,7 +28,7 @@ const CreateRequestPage = () => {
 
 
 
-    const [selectedItem, setSelectedItem] = useState("blable")
+    const [selectedItem, setSelectedItem] = useState("")
     const [requestData, setRequestData] = useState(requestJson.requests)
 
 
