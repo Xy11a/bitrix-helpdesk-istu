@@ -24,7 +24,7 @@ let requestJson = {
 }
 
 
-const CreateRequest = () => {
+const CreateRequestPage = () => {
 
 
 
@@ -47,4 +47,4 @@ const CreateRequest = () => {
     );
 };
 
-export default CreateRequest;
+export default CreateRequestPage;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Block from "../Block/Block";
 
-const RequestManage = () => {
+const RequestManagePage = () => {
     return (
         <div>
            <Block> Управление заявками</Block>
@@ -9,4 +9,4 @@ const RequestManage = () => {
     );
 };
 
-export default RequestManage;
+export default RequestManagePage;

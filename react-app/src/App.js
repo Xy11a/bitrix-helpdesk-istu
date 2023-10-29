@@ -1,12 +1,11 @@
 import './App.css';
 import {useState} from "react";
 import Header from "./UI/Header/Header";
-import RequestTypeList from "./UI/Pages/RequestTypeList";
 import StartPage from "./UI/Pages/StartPage";
-import CreateCabinet from "./UI/Pages/CreateCabinet";
-import RequestManage from "./UI/Pages/RequestManage";
+import CreateCabinetPage from "./UI/Pages/CreateCabinetPage";
+import RequestManagePage from "./UI/Pages/RequestManagePage";
 import RequestConstructor from "./UI/Pages/RequestConstructor";
-import CreateRequest from "./UI/Pages/CreateRequest";
+import CreateRequestPage from "./UI/Pages/CreateRequestPage";
 
 
 export default function App() {
@@ -16,13 +15,13 @@ export default function App() {
             case 'start-page':
                 return <StartPage/>;
             case 'request-manage':
-                return <RequestManage/>;
+                return <RequestManagePage/>;
             case 'request-create':
-                return <CreateRequest/>;
+                return <CreateRequestPage/>;
             case 'request-constructor':
                 return <RequestConstructor/>;
             case 'create-cabinet':
-                return <CreateCabinet/>;
+                return <CreateCabinetPage/>;
         }
     }
 

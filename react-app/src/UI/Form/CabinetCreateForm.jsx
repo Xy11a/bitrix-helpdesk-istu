@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import CabinetService from "../../API/CabinetService";
 
-const CabinetCreateForm = ({cabinetData, setModal, createCabinet, updateCabinet}) => {
+const CabinetCreateForm = ({cabinetData, readCabinets}) => {
 
     const [cabName, setCabName] = useState("")
     const [corpus, setCorpus] = useState("А")
@@ -14,7 +14,7 @@ const CabinetCreateForm = ({cabinetData, setModal, createCabinet, updateCabinet}
     function submitCabinet(e, corpus, cabName) {
         e.preventDefault();
         let file = checkFileType ? fileSVG : null
-        if (setModal !== undefined){ setModal(false)}
+
 
 
 
@@ -28,7 +28,7 @@ const CabinetCreateForm = ({cabinetData, setModal, createCabinet, updateCabinet}
                     formData.append("cabinet", corpus + cabName)
                     CabinetService.addSVG(formData)
                 })
-            updateCabinet()
+            readCabinets()
         }
 
 
