@@ -33,8 +33,11 @@ const CreateCabinetPage = () => {
         setCabinetData(await CabinetService.getAllCabinets())
     }
 
-    const updateCabinet = (newCabinetName) => {
-
+    const updateCabinet = (newCabinetData) => {
+        let newArr = [...cabinetData];
+        let index =  newArr.findIndex((el)=> el === selectedItem)
+        newArr[index] = {number: newCabinetData.number, cabinetLink: newCabinetData.cabinetLink}
+        console.log(newArr)
     }
 
     const crudToolBar = (panel) => {
@@ -43,7 +46,7 @@ const CreateCabinetPage = () => {
                 return <CabinetCreateForm cabinetData={cabinetData} createCabinet={createCabinet} readCabinets={readCabinets} />
             case "update":
                 //TODO Доделать редактирование кабинета
-                return <CabinetEditForm cabinet={selectedItem} />
+                return <CabinetEditForm cabinet={selectedItem} updateCabinet={updateCabinet} />
             case "delete":
                 return <CabinetDeleteForm selection={selectedItem} deleteFunction={deleteCabinet}/>
         }
