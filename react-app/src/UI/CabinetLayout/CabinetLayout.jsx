@@ -34,7 +34,7 @@ function createCanvas(planMode, selectedCabinet,updateCabinets) {
         case "device-layout":
             return <CanvasDeviceLayout cabinet={selectedCabinet} updateCabinets={updateCabinets} />
         case "cabinet-layout":
-            return <CanvasCabinetLayout/>
+            return <CanvasCabinetLayout cabinet={selectedCabinet} updateCabinets={updateCabinets}/>
     }
 
 
