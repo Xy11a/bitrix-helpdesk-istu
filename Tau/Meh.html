@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Поставте 4 ПЖ :)</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+		   <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+	<style>
+	 table,td,tr { border:solid;}
+	 
+	</style>
+    <!-- Моделирование графики -->
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        function drawChart() {
+
+            count = 0;
+             q1 = 1.2;
+             q2 = 2.7;
+             q3 = 0.409;
+
+            var kq = 0;
+            var Q_1 = new Array(['kq', 'q1']);
+            var Q_2 = new Array(['kq', 'q2']);
+            var Q_3 = new Array(['kq', 'q3']);
+
+            var DIDQ_1 = new Array(['kq', 'dIdq1']);
+            var DIDQ_2 = new Array(['kq', 'dIdq2']);
+            var DIDQ_3 = new Array(['kq', 'dIdq3']);
+
+            var IZap1 = new Array(['kq', 'IZap1']);
+            var IZap2 = new Array(['kq', 'IZap2']);
+            var IZap3 = new Array(['kq', 'IZap3']);
+            var IOPT = new Array(['kq', 'IOPT']);
+
+            var yZap1 = new Array(['L', 'yZap1']);
+            var yZap2 = new Array(['L', 'yZap2']);
+            var yZap3 = new Array(['L', 'yZap3']);
+            var yOPT = new Array(['kq', 'yOPT']);
+            var yETL = new Array(['kq', 'yETL']);
+
+
+            while (count < 4) {
+                isFirstRun = true;
+				isStop = false
+                while (!isStop) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    while (std < L) {
+
+
+
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////
+					
+					
+					
+
+
+
+
+
+
+                    //Q_1.push([kq, q1]);
+                    A.push([kq, q1, q2, q3]);//, q2, q3]);
+
+
+
+
+                    //Q1_1.push([kq, q1]);
+                    //Q1_2.push([kq, q1]);
+                    //Q1_3.push([kq, q1]);
+
+                    if (count == 0) {
+
+                    } else if (count == 1) {
+                        IZap2.push([kq, I])
+                    } else if (count == 2) {
+                        IZap3.push([kq, I])
+                    } else if (count == 3) {
+                        IOPT.push([kq, I])
+                    }
+
+
+                    kq = kq + 1;
+					
+					if (kq == 1) {
+                        if (count == 0) {
+                            var yZap1NE = yZap1;
+                            var yETLNE = yETL;
+                        } else if (count == 1) {
+                            var yZap2NE = yZap2;
+                        } else if (count == 2) {
+                            var yZap3NE = yZap3;
+                        } else if (count == 3) {
+                            var yOPTNE = yOPT;
+                        }
+                    }
+
+                }
+
+                if (count == 0) {
+                    Q_1 = Q1;
+                    Q_2 = Q2;
+                    Q_3 = Q3;
+
+                    DIDQ_1 = DI_Q1;
+                    DIDQ_2 = DI_Q2;
+                    DIDQ_3 = DI_Q3;
+                    //QQ_1 = Q1_1;
+                    q1 = 0.7;
+                    q2 = 2.7;
+                    q3 = 0.409;
+                } else if (count == 1) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                    //QQ_2 = Q1_2;
+                    var q1 = 2.7;
+                    var q2 = 1.8;
+                    var q3 = 0.35;
+                } else if (count == 2) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                    //QQ_2 = Q1_2;
+                    var q1 = 3.5;
+                    var q2 = 1.7;
+                    var q3 = 0.17;
+                } else if (count == 3) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                }
+                count = count + 1;
+//q1 = count*5;
+//q2 = count*2;
+//q3 = count*5;
+
+
+            }
+
+			var Q1_chunks = getChunks(Q_1)
+			var Q2_chunks = getChunks(Q_2)
+			var Q3_chunks = getChunks(Q_3)
+			var DIDQ_1_chuck = getChunks(DIDQ_1)
+			var DIDQ_2_chuck = getChunks(DIDQ_2)
+			var DIDQ_3_chuck = getChunks(DIDQ_3)
+			
+
+		 
+			var Q11 = new Array();
+            var DIQ1_ALL = new Array();
+            for (let i = 0; i < Q1_chunks.length+1; i++) {
+                Q11.push([Q1_chunks[0][i][0], Q1_chunks[0][i][1], Q1_chunks[1][i][1], Q1_chunks[2][i][1]]);
+                DIQ1_ALL.push([DIDQ_1_chuck[0][i][0], DIDQ_1_chuck[0][i][1], DIDQ_1_chuck[2][i][1]])
+            }
+
+            var Q12 = new Array();
+            var DIQ2_ALL = new Array();
+            for (let i = 0; i <  Q1_chunks.length+1; i++) {
+                Q12.push([Q2_chunks[0][i][0], Q2_chunks[0][i][1], Q2_chunks[1][i][1], Q2_chunks[2][i][1]]);
+                DIQ2_ALL.push([DIDQ_2_chuck[0][i][0], DIDQ_2_chuck[0][i][1], DIDQ_2_chuck[2][i][1]])
+            }
+
+            var Q13 = new Array();
+            var DIQ3_ALL = new Array();
+            for (let i = 0; i <  Q1_chunks.length+1; i++) {
+                Q13.push([Q3_chunks[0][i][0], Q3_chunks[0][i][1], Q3_chunks[1][i][1], Q3_chunks[2][i][1]]);
+                DIQ3_ALL.push([DIDQ_3_chuck[0][i][0], DIDQ_3_chuck[0][i][1], DIDQ_3_chuck[2][i][1]])
+            }
+						
+
+            //var Y_ALL = new Array();
+            //console.log(yZap1.length)
+            //for (let indx = 0; indx < yZap1.length; indx++) {
+             //   console.log(yETL[indx][0])
+              //  Y_ALL.push([yZap1[indx][0], yZap1[indx][1], yZap2[indx][1], yZap3[indx][1], yETL[indx][1], yOPT[indx][1]])
+            //}
+		
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap1.length; i++)
+			{
+				 if(i>0 && yZap1[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap1[i][0]);
+				 yyy.push(yZap1[i][1]);
+			}
+			
+			var yZap1Trace = {
+			  name: 'Yzap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap2.length; i++)
+			{
+				 if(i>0 && yZap1[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap2[i][0]);
+				 yyy.push(yZap2[i][1]);
+			}
+			
+			var yZap2Trace = {
+			name: 'Yzap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap3.length; i++)
+			{
+				 if(i>0 && yZap3[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap3[i][0]);
+				 yyy.push(yZap3[i][1]);
+			}
+			
+			var yZap3Trace = {
+			name: 'Yzap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yETL.length; i++)
+			{
+				 if(i>0 && yETL[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yETL[i][0]);
+				 yyy.push(yETL[i][1]);
+			}
+			
+			var yETLTrace = {
+			name: 'YETL',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yOPT.length; i++)
+			{
+				 if(i>0 && yOPT[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yOPT[i][0]);
+				 yyy.push(yOPT[i][1]);
+			}
+			
+			var yOPTTrace = {
+			name: 'YOPT',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var dataY = [yZap1Trace,yZap2Trace,yZap3Trace,yOPTTrace,yETLTrace];
+			
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap1.length; i++)
+			{
+			
+				 xxx.push(IZap1[i][0]);
+				 yyy.push(IZap1[i][1]);
+			}
+			
+			var IZap1Trace = {
+			name: 'Izap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap2.length; i++)
+			{
+				
+				 xxx.push(IZap2[i][0]);
+				 yyy.push(IZap2[i][1]);
+			}
+			
+			var IZap2Trace = {
+			name: 'Izap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap3.length; i++)
+			{
+				
+				 xxx.push(IZap3[i][0]);
+				 yyy.push(IZap3[i][1]);
+			}
+			
+			var IZap3Trace = {
+			name: 'Izap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IOPT.length; i++)
+			{
+				 
+				 xxx.push(IOPT[i][0]);
+				 yyy.push(IOPT[i][1]);
+			}
+			
+			var IOPTTrace = {
+			name: 'IOPT',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var dataI = [IZap1Trace,IZap2Trace,IZap3Trace,IOPTTrace];
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[0].length; i++)
+			{
+				 xxx.push(Q1_chunks[0][i][0]);
+				 yyy.push(Q1_chunks[0][i][1]);
+			}
+			
+			var Q1Zap1Trace = {
+			name: 'Q1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[1].length; i++)
+			{
+				 xxx.push(Q1_chunks[1][i][0]);
+				 yyy.push(Q1_chunks[1][i][1]);
+			}
+			
+			var Q1Zap2Trace = {
+			name: 'Q1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[2].length; i++)
+			{
+				 xxx.push(Q1_chunks[2][i][0]);
+				 yyy.push(Q1_chunks[2][i][1]);
+			}
+			
+			var Q1Zap3Trace = {
+			name: 'Q1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			var dataQ1 = [Q1Zap1Trace,Q1Zap2Trace,Q1Zap3Trace];
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[0].length; i++)
+			{
+				 xxx.push(Q2_chunks[0][i][0]);
+				 yyy.push(Q2_chunks[0][i][1]);
+			}
+			
+			var Q2Zap1Trace = {
+			name: 'Q2 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[1].length; i++)
+			{
+				 xxx.push(Q2_chunks[1][i][0]);
+				 yyy.push(Q2_chunks[1][i][1]);
+			}
+			
+			var Q2Zap2Trace = {
+			name: 'Q2 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[2].length; i++)
+			{
+				 xxx.push(Q2_chunks[2][i][0]);
+				 yyy.push(Q2_chunks[2][i][1]);
+			}
+			
+			var Q2Zap3Trace = {
+			name: 'Q2 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			
+			var dataQ2 = [Q2Zap1Trace,Q2Zap2Trace,Q2Zap3Trace];
+			
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[0].length; i++)
+			{
+				 xxx.push(Q3_chunks[0][i][0]);
+				 yyy.push(Q3_chunks[0][i][1]);
+			}
+			
+			var Q3Zap1Trace = {
+			name: 'Q3 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[1].length; i++)
+			{
+				 xxx.push(Q3_chunks[1][i][0]);
+				 yyy.push(Q3_chunks[1][i][1]);
+			}
+			
+			var Q3Zap2Trace = {
+			name: 'Q3 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[2].length; i++)
+			{
+				 xxx.push(Q3_chunks[2][i][0]);
+				 yyy.push(Q3_chunks[2][i][1]);
+			}
+			
+			var Q3Zap3Trace = {
+			name: 'Q3 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			
+			var dataQ3 = [Q3Zap1Trace,Q3Zap2Trace,Q3Zap3Trace];
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[0][i][0]);
+				 yyy.push(DIDQ_1_chuck[0][i][1]);
+			}
+			
+			var DIDQ1Zap1Trace = {
+			name: 'DIDQ1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[1][i][0]);
+				 yyy.push(DIDQ_2_chuck[1][i][1]);
+			}
+			
+			var DIDQ1Zap2Trace = {
+			name: 'DIDQ1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[2][i][0]);
+				 yyy.push(DIDQ_1_chuck[2][i][1]);
+			}
+			
+			var DIDQ1Zap3Trace = {
+			name: 'DIDQ1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD1 = [DIDQ1Zap1Trace,DIDQ1Zap2Trace,DIDQ1Zap3Trace];
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[0][i][0]);
+				 yyy.push(DIDQ_1_chuck[0][i][1]);
+			}
+			
+			var DIDQ1Zap1Trace = {
+			name: 'DIDQ1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[1][i][0]);
+				 yyy.push(DIDQ_1_chuck[1][i][1]);
+			}
+			
+			var DIDQ1Zap2Trace = {
+			name: 'DIDQ1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[2][i][0]);
+				 yyy.push(DIDQ_1_chuck[2][i][1]);
+			}
+			
+			var DIDQ1Zap3Trace = {
+			name: 'DIDQ1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD1 = [DIDQ1Zap1Trace,DIDQ1Zap2Trace,DIDQ1Zap3Trace];
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[0][i][0]);
+				 yyy.push(DIDQ_2_chuck[0][i][1]);
+			}
+			
+			var DIDQ2Zap1Trace = {
+			name: 'DIDQ2 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[1][i][0]);
+				 yyy.push(DIDQ_2_chuck[1][i][1]);
+			}
+			
+			var DIDQ2Zap2Trace = {
+			name: 'DIDQ2 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[2][i][0]);
+				 yyy.push(DIDQ_2_chuck[2][i][1]);
+			}
+			
+			var DIDQ2Zap3Trace = {
+			name: 'DIDQ2 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD2 = [DIDQ2Zap1Trace,DIDQ2Zap2Trace,DIDQ2Zap3Trace];
+			
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[0][i][0]);
+				 yyy.push(DIDQ_3_chuck[0][i][1]);
+			}
+			
+			var DIDQ3Zap1Trace = {
+			name: 'DIDQ3 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[1][i][0]);
+				 yyy.push(DIDQ_3_chuck[1][i][1]);
+			}
+			
+			var DIDQ3Zap2Trace = {
+			name: 'DIDQ3 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[2][i][0]);
+				 yyy.push(DIDQ_3_chuck[2][i][1]);
+			}
+			
+			var DIDQ3Zap3Trace = {
+			name: 'DIDQ3 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD3 = [DIDQ3Zap1Trace,DIDQ3Zap2Trace,DIDQ3Zap3Trace];
+
+
+
+
+
+
+
+
+
+	}
+            
+
+        
+    </script>
+    <!-- Конец моделирования -->
+</head>
+<body>
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                Y & I
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart4" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart5" style="width: 1500px; height: 600px"></div>
+				<div id="curve_chart9" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseTwo">
+                Q1 & Q2 & Q3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart1" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q1Zap1</td><td>Q1Zap2</td><td>Q1Zap3</td></tr>
+					<tr><td id="Q1Zap1"></td><td id="Q1Zap2"></td><td id="Q1Zap3"></td></tr>
+					</table>
+				</div>
+                <div id="curve_chart2" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q2Zap1</td><td>Q2Zap2</td><td>Q2Zap3</td></tr>
+					<tr><td id="Q2Zap1"></td><td id="Q2Zap2"></td><td id="Q2Zap3"></td></tr>
+					</table>
+				</div>
+                <div id="curve_chart3" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q3Zap1</td><td>Q3Zap2</td><td>Q3Zap3</td></tr>
+					<tr><td id="Q3Zap1"></td><td id="Q3Zap2"></td><td id="Q3Zap3"></td></tr>
+					</table>
+				</div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree">
+                DIQ1 & DIQ2 & DIQ3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart6" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart7" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart8" style="width: 1500px; height: 600px"></div>
+				<div id="curve_chartSpecial" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sliceIntoChunks(arr, chunkSize) {
+        const res = [];
+        for (let i = 0; i < arr.length; i += chunkSize) {
+            const chunk = arr.slice(i, i + chunkSize);
+            res.push(chunk);
+        }
+        return res;
+    }
+	
+	function getChunks(blabla){
+		Arrays = new Array()
+		arr = new Array()
+		for (let i = 0; i < blabla.length; i += 1)
+		{
+			if(blabla[i][0] == "kq") 
+			{
+				arr = new Array()
+				Arrays.push(arr)
+			}
+			arr.push(blabla[i])
+		}
+		return Arrays
+	}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+</div> <!-- conteiner end -->
+</body>

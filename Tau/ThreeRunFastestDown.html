@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Поставте 4 ПЖ :)</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+		   <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+	<style>
+	 table,td,tr { border:solid;}
+	 
+	</style>
+    <!-- Моделирование графики -->
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function y_model(U, y1, z1) {
+            var Kob = 1;
+            var T1 = 1;
+            var k1 = 1;
+            var Tob1 = 1;
+            var Tob2 = 3;
+            var tauob = 0.3;
+            var k1, k2, k3, k4;
+            var m1, m2, m3, m4;
+            var dt = 0.01;
+            //var z1=0;
+            //var z2=0;
+            var y1 = 0;
+
+
+            y1 = z1;
+            m1 = dt * (k1 / T1 * U - 1 / T1 * y1);
+            m2 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m1 / 2));
+            m3 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m2 / 2));
+            m4 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m3));
+            z1 = z1 + 1 / 6 * (m1 + 2 * m2 + 2 * m3 + m4);
+
+            return [y1, z1];
+        }
+
+        function y_model_E(U, y1, z1) {
+            var Kob = 1;
+            var T1 = 0.3;
+            var k1 = 1;
+            var Tob1 = 1;
+            var Tob2 = 3;
+            var tauob = 0.3;
+            var k1, k2, k3, k4;
+            var m1, m2, m3, m4;
+            var dt = 0.01;
+            //var z1=0;
+            //var z2=0;
+            var y1 = 0;
+
+            y1 = z1;
+            m1 = dt * (k1 / T1 * U - 1 / T1 * y1);
+            m2 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m1 / 2));
+            m3 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m2 / 2));
+            m4 = dt * (k1 / T1 * U - 1 / T1 * (y1 + m3));
+            z1 = z1 + 1 / 6 * (m1 + 2 * m2 + 2 * m3 + m4);
+
+            return [y1, z1];
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        function zap(i, ns, y1, mas, j) {
+
+            if (i >= ns) {
+                if (j >= (ns - 1)) j = 0;
+                j = j + 1;
+                y = mas[j];
+                mas[j] = y1;
+            } else {
+                mas[i] = y1;
+                y = 0;
+            }
+
+            return [y, j];
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        function u_pid(x, x_pr, dt, sumx, q_1, q_2, q_3) {
+            dx = (x - x_pr) / dt;
+            sumx = sumx + x * dt;
+            u = q_1 * x + q_2 * sumx + q_3 * dx;
+
+            return [u, sumx, dx];
+        }
+
+        function ksi_1_pid(x_x, x, x_pr, ksi_1, dt, sumx, q_1, q_2, q_3) {
+            //dksi_1 = ( ksi - ksi_1_pr)/dt;
+            dx = (x - x_pr) / dt;
+
+            //sum_ksi_1 = sum_ksi_1 + ksi_1*dt;
+            sumx = sumx + ksi_1 * dt;
+
+            u = x_x - q_1 * ksi_1 - q_2 * sumx - q_3 * dx;
+
+            return [u, sumx];
+        }
+
+        function ksi_2_pid(sumx_x, x, x_pr, ksi_2, dt, sumx, q_1, q_2, q_3) {
+
+            dx = (x - x_pr) / dt;
+
+            sumx = sumx + ksi_2 * dt;
+
+            u = sumx_x - q_1 * ksi_2 - q_2 * sumx - q_3 * dx;
+
+            return [u, sumx];
+        }
+
+        function ksi_3_pid(dx_x, x, x_pr, ksi_3, dt, sumx, q_1, q_2, q_3) {
+
+            dx = (x - x_pr) / dt;
+
+            sumx = sumx + ksi_3 * dt;
+
+            u = dx_x - q_1 * ksi_3 - q_2 * sumx - q_3 * dx;
+
+            return [u, sumx];
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        function drawChart() {
+
+            count = 0;
+            var q1 = 1.2;
+            var q2 = 2.7;
+            var q3 = 0.409;
+
+            var kq = 0;
+            var Q_1 = new Array(['kq', 'q1']);
+            var Q_2 = new Array(['kq', 'q2']);
+            var Q_3 = new Array(['kq', 'q3']);
+
+            var DIDQ_1 = new Array(['kq', 'dIdq1']);
+            var DIDQ_2 = new Array(['kq', 'dIdq2']);
+            var DIDQ_3 = new Array(['kq', 'dIdq3']);
+
+            var IZap1 = new Array(['kq', 'IZap1']);
+            var IZap2 = new Array(['kq', 'IZap2']);
+            var IZap3 = new Array(['kq', 'IZap3']);
+            var IOPT = new Array(['kq', 'IOPT']);
+
+            var yZap1 = new Array(['L', 'yZap1']);
+            var yZap2 = new Array(['L', 'yZap2']);
+            var yZap3 = new Array(['L', 'yZap3']);
+            var yOPT = new Array(['kq', 'yOPT']);
+            var yETL = new Array(['kq', 'yETL']);
+
+
+            var Q = new Array(['kq', 'q_1(0)', 'q_1(5)', 'q_1(10)']);
+
+            var QQ_1 = new Array(['kq', 'q1_1', 'q1_2', 'q1_3']);
+            var QQ_2 = new Array(['kq', 'q2_1', 'q2_2', 'q2_3']);
+            var QQ_3 = new Array(['kq', 'q3_1', 'q3_2', 'q3_3']);
+
+            while (count < 4) {
+                kq = 0;
+                var h = 0.3;
+                var I = 0;
+                var dI_dq1, dI_dq2, dI_dq3;
+                var x;
+                var A = new Array(['kq', 'q1', 'q2', 'q3']);
+
+                var Q1 = new Array(['kq', 'q1']);
+                var Q2 = new Array(['kq', 'q2']);
+                var Q3 = new Array(['kq', 'q3']);
+
+                var DI_Q1 = new Array(['kq', 'dIdq1']);
+                var DI_Q2 = new Array(['kq', 'dIdq2']);
+                var DI_Q3 = new Array(['kq', 'dIdq3']);
+                //var Q1_2=new Array(['kq','q1_2']);
+                //var Q1_3=new Array(['kq','q1_3']);
+
+                //var q1 = 0;
+                //var q2 = 0;
+                //var q3 = 0;
+
+                var sumI = 0;
+
+                var std;
+
+                var g = 1;
+                var L = 15;
+                var du_dq_1, du_dq_2, du_dq_3;
+                var ksi_1, ksi_2, ksi_3;
+                var dt = 0.01;
+                var tauob = 0.1;
+                var ns = tauob / dt;
+
+                if (count == 3) {
+                    var q1 = 3;
+                    var q2 = 3;
+                    var q3 = 0.08;
+                }
+                isFirstRun = true;
+				isStop = false
+                while (!isStop) {
+		//		 while (kq <101) {
+
+                    if (kq == 99) {
+                        if (count == 0) {
+                            var yZap1 = new Array(['L', 'yZap1']);
+                            var yETL = new Array(['kq', 'yETL']);
+                        } else if (count == 1) {
+                            var yZap2 = new Array(['L', 'yZap2']);
+                        } else if (count == 2) {
+                            var yZap3 = new Array(['L', 'yZap3']);
+                        } else if (count == 3) {
+                            var yOPT = new Array(['kq', 'yOPT']);
+                        }
+                    }
+
+                    //перемменные
+                    var I_pred = I;
+
+                    I = 0;
+
+                    dI_dq1 = 0;
+                    dI_dq2 = 0;
+                    dI_dq3 = 0;
+
+                    var y = 0;
+                    var y1 = 0;
+                    var y_etal = 0;
+                    var z1_etal = 0;
+                    var z1 = 0;
+                    var z2 = 0;
+
+                    std = 0;
+
+                    var i = 0;
+                    var j = 0;
+
+                    var sumx = 0;
+
+                    var x_pr;
+                    var dx = 0;
+                    var u;
+                    x = 0;
+
+
+                    ksi_1 = 0;
+                    ksi_2 = 0;
+                    ksi_3 = 0;
+
+                    var du_dq_1 = 0;
+                    var du_dq_2 = 0;
+                    var du_dq_3 = 0;
+
+                    var ksi_1_pr = 0;
+                    var ksi_2_pr = 0;
+                    var ksi_3_pr = 0;
+
+                    var sum_ksi_1 = 0;
+                    var sum_ksi_2 = 0;
+                    var sum_ksi_3 = 0;
+
+                    var KSI_1 = 0;
+                    var KSI_2 = 0;
+                    var KSI_3 = 0;
+
+                    var i_ksi_1 = 0;
+                    var i_ksi_2 = 0;
+                    var i_ksi_3 = 0;
+
+                    var j_ksi_1 = 0;
+                    var j_ksi_2 = 0;
+                    var j_ksi_3 = 0;
+
+                    var z_11 = 0;
+                    var z_21 = 0;
+                    var z_31 = 0;
+
+                    var z_12 = 0;
+                    var z_22 = 0;
+                    var z_32 = 0;
+
+                    var mas = new Array(['y zap']);
+                    var mas_ksi_1 = new Array(['ksi_1']);
+                    var mas_ksi_2 = new Array(['ksi_2']);
+                    var mas_ksi_3 = new Array(['ksi_3']);
+
+
+                    while (std < L) {
+
+                        std = std + dt;
+
+                        x_pr = x;
+                        x = g - y;
+
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //u
+
+                        [u, sumx, dx] = u_pid(x, x_pr, dt, sumx, q1, q2, q3, dx);
+
+                        [y1, z1] = y_model(u, y, z1);
+
+                        i = i + 1;
+                        [y, j] = zap(i, ns, y1, mas, j);
+
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //u_etal
+
+
+                        [y_etal, z1_etal] = y_model_E(g, y_etal, z1_etal);
+                        //[y_etal , z1_etal] = y_model(g, y_etal, z1_etal);
+
+
+                        if (count == 0) {
+                            yZap1.push([std, y])
+                            yETL.push([std, y_etal])
+                        } else if (count == 1) {
+                            yZap2.push([std, y])
+                        } else if (count == 2) {
+                            yZap3.push([std, y])
+                        } else if (count == 3) {
+                            yOPT.push([std, y])
+                        }
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        //критерий
+                        I = I + (y - y_etal) * (y - y_etal) * dt;
+
+
+                    if(I >= I_pred) {
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //ksi_1
+
+                        [du_dq_1, sum_ksi_1] = ksi_1_pid(x, KSI_1, ksi_1_pr, ksi_1, dt, sum_ksi_1, q1, q2, q3);
+
+                        [ksi_1, z_11] = y_model(du_dq_1, KSI_1, z_11);
+
+                        i_ksi_1 = i_ksi_1 + 1;
+                        ksi_1_pr = KSI_1;
+                        [KSI_1, j_ksi_1] = zap(i_ksi_1, ns, ksi_1, mas_ksi_1, j_ksi_1);
+
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //ksi_2
+
+                        [du_dq_2, sum_ksi_2] = ksi_2_pid(sumx, KSI_2, ksi_2_pr, ksi_2, dt, sum_ksi_2, q1, q2, q3);
+
+                        [ksi_2, z_21] = y_model(du_dq_2, KSI_2, z_21);
+
+                        i_ksi_2 = i_ksi_2 + 1;
+                        ksi_2_pr = KSI_2;
+                        [KSI_2, j_ksi_2] = zap(i_ksi_2, ns, ksi_2, mas_ksi_2, j_ksi_2);
+
+                        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        //ksi_3
+
+                        [du_dq_3, sum_ksi_3] = ksi_3_pid(dx, KSI_3, ksi_3_pr, ksi_3, dt, sum_ksi_3, q1, q2, q3);
+
+                        [ksi_3, z_31] = y_model(du_dq_3, KSI_3, z_31);
+
+                        i_ksi_3 = i_ksi_3 + 1;
+                        ksi_3_pr = KSI_3;
+                        [KSI_3, j_ksi_3] = zap(i_ksi_3, ns, ksi_3, mas_ksi_3, j_ksi_3);
+                        dI_dq1 = dI_dq1 + (2) * (y - y_etal) * KSI_1 * dt;
+                        dI_dq2 = dI_dq2 + (2) * (y - y_etal) * KSI_2 * dt;
+                        dI_dq3 = dI_dq3 + (2) * (y - y_etal) * KSI_3 * dt;
+                    }
+
+
+                    }
+
+                    if(I >= I_pred)
+                    {
+
+                    } else {
+                        dI_dq1 = dI_dq1_old
+                        dI_dq2 = dI_dq2_old
+                        dI_dq3 = dI_dq3_old
+                    }
+                    dI_dq1_old = dI_dq1
+                    dI_dq2_old = dI_dq2
+                    dI_dq3_old = dI_dq3
+                    sumI = dI_dq1 * dI_dq1 + dI_dq2 * dI_dq2 + dI_dq3 * dI_dq3;
+					
+					
+					
+                    sumI = Math.sqrt(sumI);
+
+					if(sumI.toFixed(9) <= 0.000001)
+					{
+						console.log(sumI.toFixed(9))
+						isStop=true;
+					}
+
+                    if (I_pred > I)
+                       // h = h * 1.25;
+					   h = h * 1.23;
+                    else
+                        h = h / 2;
+
+                    q1 = q1 - h * dI_dq1 / sumI;//это не те, которые мы подбирали оптимально
+                    q2 = q2 - h * dI_dq2 / sumI;
+                    q3 = q3 - h * dI_dq3 / sumI;
+
+                    //Q_1.push([kq, q1]);
+                    A.push([kq, q1, q2, q3]);//, q2, q3]);
+
+
+                    Q1.push([kq, q1]);
+                    Q2.push([kq, q2]);
+                    Q3.push([kq, q3]);
+
+                    DI_Q1.push([kq, dI_dq1]);
+                    DI_Q2.push([kq, dI_dq2]);
+                    DI_Q3.push([kq, dI_dq3]);
+
+                    //Q1_1.push([kq, q1]);
+                    //Q1_2.push([kq, q1]);
+                    //Q1_3.push([kq, q1]);
+
+                    if (count == 0) {
+                        IZap1.push([kq, I])
+                    } else if (count == 1) {
+                        IZap2.push([kq, I])
+                    } else if (count == 2) {
+                        IZap3.push([kq, I])
+                    } else if (count == 3) {
+                        IOPT.push([kq, I])
+                    }
+
+
+                    kq = kq + 1;
+					
+					if (kq == 1) {
+                        if (count == 0) {
+                            var yZap1NE = yZap1;
+                            var yETLNE = yETL;
+                        } else if (count == 1) {
+                            var yZap2NE = yZap2;
+                        } else if (count == 2) {
+                            var yZap3NE = yZap3;
+                        } else if (count == 3) {
+                            var yOPTNE = yOPT;
+                        }
+                    }
+
+                }
+
+                if (count == 0) {
+                    Q_1 = Q1;
+                    Q_2 = Q2;
+                    Q_3 = Q3;
+
+                    DIDQ_1 = DI_Q1;
+                    DIDQ_2 = DI_Q2;
+                    DIDQ_3 = DI_Q3;
+                    //QQ_1 = Q1_1;
+                    var q1 = 2.4;
+                    var q2 = 0;
+                    var q3 = 0.1;
+                } else if (count == 1) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                    //QQ_2 = Q1_2;
+                    var q1 = 2.7;
+                    var q2 = 1.8;
+                    var q3 = 0.35;
+                } else if (count == 2) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                    //QQ_2 = Q1_2;
+                    var q1 = 3.5;
+                    var q2 = 1.7;
+                    var q3 = 0.17;
+                } else if (count == 3) {
+                    Q_1 = Q_1.concat(Q1);
+                    Q_2 = Q_2.concat(Q2);
+                    Q_3 = Q_3.concat(Q3);
+
+                    DIDQ_1 = DIDQ_1.concat(DI_Q1);
+                    DIDQ_2 = DIDQ_2.concat(DI_Q2);
+                    DIDQ_3 = DIDQ_3.concat(DI_Q3);
+                }
+                count = count + 1;
+//q1 = count*5;
+//q2 = count*2;
+//q3 = count*5;
+
+
+            }
+
+			var Q1_chunks = getChunks(Q_1)
+			var Q2_chunks = getChunks(Q_2)
+			var Q3_chunks = getChunks(Q_3)
+			var DIDQ_1_chuck = getChunks(DIDQ_1)
+			var DIDQ_2_chuck = getChunks(DIDQ_2)
+			var DIDQ_3_chuck = getChunks(DIDQ_3)
+			
+
+		 
+			var Q11 = new Array();
+            var DIQ1_ALL = new Array();
+            for (let i = 0; i < Q1_chunks.length+1; i++) {
+                Q11.push([Q1_chunks[0][i][0], Q1_chunks[0][i][1], Q1_chunks[1][i][1], Q1_chunks[2][i][1]]);
+                DIQ1_ALL.push([DIDQ_1_chuck[0][i][0], DIDQ_1_chuck[0][i][1], DIDQ_1_chuck[2][i][1]])
+            }
+
+            var Q12 = new Array();
+            var DIQ2_ALL = new Array();
+            for (let i = 0; i <  Q1_chunks.length+1; i++) {
+                Q12.push([Q2_chunks[0][i][0], Q2_chunks[0][i][1], Q2_chunks[1][i][1], Q2_chunks[2][i][1]]);
+                DIQ2_ALL.push([DIDQ_2_chuck[0][i][0], DIDQ_2_chuck[0][i][1], DIDQ_2_chuck[2][i][1]])
+            }
+
+            var Q13 = new Array();
+            var DIQ3_ALL = new Array();
+            for (let i = 0; i <  Q1_chunks.length+1; i++) {
+                Q13.push([Q3_chunks[0][i][0], Q3_chunks[0][i][1], Q3_chunks[1][i][1], Q3_chunks[2][i][1]]);
+                DIQ3_ALL.push([DIDQ_3_chuck[0][i][0], DIDQ_3_chuck[0][i][1], DIDQ_3_chuck[2][i][1]])
+            }
+						
+
+            //var Y_ALL = new Array();
+            //console.log(yZap1.length)
+            //for (let indx = 0; indx < yZap1.length; indx++) {
+             //   console.log(yETL[indx][0])
+              //  Y_ALL.push([yZap1[indx][0], yZap1[indx][1], yZap2[indx][1], yZap3[indx][1], yETL[indx][1], yOPT[indx][1]])
+            //}
+		
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap1.length; i++)
+			{
+				 if(i>0 && yZap1[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap1[i][0]);
+				 yyy.push(yZap1[i][1]);
+			}
+			
+			var yZap1Trace = {
+			  name: 'Yzap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap2.length; i++)
+			{
+				 if(i>0 && yZap1[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap2[i][0]);
+				 yyy.push(yZap2[i][1]);
+			}
+			
+			var yZap2Trace = {
+			name: 'Yzap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yZap3.length; i++)
+			{
+				 if(i>0 && yZap3[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yZap3[i][0]);
+				 yyy.push(yZap3[i][1]);
+			}
+			
+			var yZap3Trace = {
+			name: 'Yzap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yETL.length; i++)
+			{
+				 if(i>0 && yETL[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yETL[i][0]);
+				 yyy.push(yETL[i][1]);
+			}
+			
+			var yETLTrace = {
+			name: 'YETL',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  yOPT.length; i++)
+			{
+				 if(i>0 && yOPT[i+1][0]==0.01) 
+				 {
+				  break;
+				 }
+				 xxx.push(yOPT[i][0]);
+				 yyy.push(yOPT[i][1]);
+			}
+			
+			var yOPTTrace = {
+			name: 'YOPT',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var dataY = [yZap1Trace,yZap2Trace,yZap3Trace,yOPTTrace,yETLTrace];
+			
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap1.length; i++)
+			{
+			
+				 xxx.push(IZap1[i][0]);
+				 yyy.push(IZap1[i][1]);
+			}
+			
+			var IZap1Trace = {
+			name: 'Izap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap2.length; i++)
+			{
+				
+				 xxx.push(IZap2[i][0]);
+				 yyy.push(IZap2[i][1]);
+			}
+			
+			var IZap2Trace = {
+			name: 'Izap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IZap3.length; i++)
+			{
+				
+				 xxx.push(IZap3[i][0]);
+				 yyy.push(IZap3[i][1]);
+			}
+			
+			var IZap3Trace = {
+			name: 'Izap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			
+			for (let i = 0; i <  IOPT.length; i++)
+			{
+				 
+				 xxx.push(IOPT[i][0]);
+				 yyy.push(IOPT[i][1]);
+			}
+			
+			var IOPTTrace = {
+			name: 'IOPT',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			var dataI = [IZap1Trace,IZap2Trace,IZap3Trace,IOPTTrace];
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[0].length; i++)
+			{
+				 xxx.push(Q1_chunks[0][i][0]);
+				 yyy.push(Q1_chunks[0][i][1]);
+			}
+			
+			var Q1Zap1Trace = {
+			name: 'Q1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[1].length; i++)
+			{
+				 xxx.push(Q1_chunks[1][i][0]);
+				 yyy.push(Q1_chunks[1][i][1]);
+			}
+			
+			var Q1Zap2Trace = {
+			name: 'Q1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q1_chunks[2].length; i++)
+			{
+				 xxx.push(Q1_chunks[2][i][0]);
+				 yyy.push(Q1_chunks[2][i][1]);
+			}
+			
+			var Q1Zap3Trace = {
+			name: 'Q1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			var dataQ1 = [Q1Zap1Trace,Q1Zap2Trace,Q1Zap3Trace];
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[0].length; i++)
+			{
+				 xxx.push(Q2_chunks[0][i][0]);
+				 yyy.push(Q2_chunks[0][i][1]);
+			}
+			
+			var Q2Zap1Trace = {
+			name: 'Q2 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[1].length; i++)
+			{
+				 xxx.push(Q2_chunks[1][i][0]);
+				 yyy.push(Q2_chunks[1][i][1]);
+			}
+			
+			var Q2Zap2Trace = {
+			name: 'Q2 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q2_chunks[2].length; i++)
+			{
+				 xxx.push(Q2_chunks[2][i][0]);
+				 yyy.push(Q2_chunks[2][i][1]);
+			}
+			
+			var Q2Zap3Trace = {
+			name: 'Q2 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			
+			var dataQ2 = [Q2Zap1Trace,Q2Zap2Trace,Q2Zap3Trace];
+			
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[0].length; i++)
+			{
+				 xxx.push(Q3_chunks[0][i][0]);
+				 yyy.push(Q3_chunks[0][i][1]);
+			}
+			
+			var Q3Zap1Trace = {
+			name: 'Q3 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[1].length; i++)
+			{
+				 xxx.push(Q3_chunks[1][i][0]);
+				 yyy.push(Q3_chunks[1][i][1]);
+			}
+			
+			var Q3Zap2Trace = {
+			name: 'Q3 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  Q3_chunks[2].length; i++)
+			{
+				 xxx.push(Q3_chunks[2][i][0]);
+				 yyy.push(Q3_chunks[2][i][1]);
+			}
+			
+			var Q3Zap3Trace = {
+			name: 'Q3 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			
+			
+			var dataQ3 = [Q3Zap1Trace,Q3Zap2Trace,Q3Zap3Trace];
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[0][i][0]);
+				 yyy.push(DIDQ_1_chuck[0][i][1]);
+			}
+			
+			var DIDQ1Zap1Trace = {
+			name: 'DIDQ1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[1][i][0]);
+				 yyy.push(DIDQ_2_chuck[1][i][1]);
+			}
+			
+			var DIDQ1Zap2Trace = {
+			name: 'DIDQ1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[2][i][0]);
+				 yyy.push(DIDQ_1_chuck[2][i][1]);
+			}
+			
+			var DIDQ1Zap3Trace = {
+			name: 'DIDQ1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD1 = [DIDQ1Zap1Trace,DIDQ1Zap2Trace,DIDQ1Zap3Trace];
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[0][i][0]);
+				 yyy.push(DIDQ_1_chuck[0][i][1]);
+			}
+			
+			var DIDQ1Zap1Trace = {
+			name: 'DIDQ1 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[1][i][0]);
+				 yyy.push(DIDQ_1_chuck[1][i][1]);
+			}
+			
+			var DIDQ1Zap2Trace = {
+			name: 'DIDQ1 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_1_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_1_chuck[2][i][0]);
+				 yyy.push(DIDQ_1_chuck[2][i][1]);
+			}
+			
+			var DIDQ1Zap3Trace = {
+			name: 'DIDQ1 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD1 = [DIDQ1Zap1Trace,DIDQ1Zap2Trace,DIDQ1Zap3Trace];
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[0][i][0]);
+				 yyy.push(DIDQ_2_chuck[0][i][1]);
+			}
+			
+			var DIDQ2Zap1Trace = {
+			name: 'DIDQ2 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[1][i][0]);
+				 yyy.push(DIDQ_2_chuck[1][i][1]);
+			}
+			
+			var DIDQ2Zap2Trace = {
+			name: 'DIDQ2 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_2_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_2_chuck[2][i][0]);
+				 yyy.push(DIDQ_2_chuck[2][i][1]);
+			}
+			
+			var DIDQ2Zap3Trace = {
+			name: 'DIDQ2 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD2 = [DIDQ2Zap1Trace,DIDQ2Zap2Trace,DIDQ2Zap3Trace];
+			
+			
+				//////////////////////////////////////////////////////////////////////////////////////
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[0].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[0][i][0]);
+				 yyy.push(DIDQ_3_chuck[0][i][1]);
+			}
+			
+			var DIDQ3Zap1Trace = {
+			name: 'DIDQ3 Zap1',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+				var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[1].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[1][i][0]);
+				 yyy.push(DIDQ_3_chuck[1][i][1]);
+			}
+			
+			var DIDQ3Zap2Trace = {
+			name: 'DIDQ3 Zap2',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var xxx = new Array()
+			var yyy = new Array()
+			i=0;
+			for (let i = 0; i <  DIDQ_3_chuck[2].length; i++)
+			{
+				 xxx.push(DIDQ_3_chuck[2][i][0]);
+				 yyy.push(DIDQ_3_chuck[2][i][1]);
+			}
+			
+			var DIDQ3Zap3Trace = {
+			name: 'DIDQ3 Zap3',
+			  x: xxx,
+			  y: yyy,
+			  type: 'scatter'
+			};
+			
+			var dataD3 = [DIDQ3Zap1Trace,DIDQ3Zap2Trace,DIDQ3Zap3Trace];
+
+			
+			const Ylegend = {
+				title: '',
+				xaxis: {
+					title: 'dt',
+				},
+				yaxis: {
+					title: 'y',
+				},
+			};
+			
+			const Ilegend = {
+				title: '',
+				xaxis: {
+					title: 'kq',
+				},
+				yaxis: {
+					title: 'I',
+				},
+			};
+			
+				const Qlegend = {
+				title: '',
+				xaxis: {
+					title: 'kq',
+				},
+				yaxis: {
+					title: 'Q',
+				},
+			};
+			
+				const DQlegend = {
+				title: '',
+				xaxis: {
+					title: 'kq',
+				},
+				yaxis: {
+					title: 'DIDQ',
+				},
+			};
+			
+
+
+			
+			Plotly.newPlot('curve_chart4', dataY, Ylegend);
+			Plotly.newPlot('curve_chart5', dataI, Ilegend);
+			
+			Plotly.newPlot('curve_chart1', dataQ1, Qlegend);
+			Plotly.newPlot('curve_chart2', dataQ2, Qlegend);
+			Plotly.newPlot('curve_chart3', dataQ3, Qlegend);
+			
+			Plotly.newPlot('curve_chart6', dataD1, DQlegend);
+			Plotly.newPlot('curve_chart7', dataD2, DQlegend);
+			Plotly.newPlot('curve_chart8', dataD3, DQlegend);
+
+	}
+            
+
+        
+    </script>
+    <!-- Конец моделирования -->
+</head>
+<body>
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                Y & I
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart4" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart5" style="width: 1500px; height: 600px"></div>
+				<div id="curve_chart9" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseTwo">
+                Q1 & Q2 & Q3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart1" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q1Zap1</td><td>Q1Zap2</td><td>Q1Zap3</td></tr>
+					<tr><td id="Q1Zap1"></td><td id="Q1Zap2"></td><td id="Q1Zap3"></td></tr>
+					</table>
+				</div>
+                <div id="curve_chart2" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q2Zap1</td><td>Q2Zap2</td><td>Q2Zap3</td></tr>
+					<tr><td id="Q2Zap1"></td><td id="Q2Zap2"></td><td id="Q2Zap3"></td></tr>
+					</table>
+				</div>
+                <div id="curve_chart3" style="width: 1500px; height: 600px"></div>
+				<div style="display: flex; justify-content: center;">
+					<table>
+					<tr><td>Q3Zap1</td><td>Q3Zap2</td><td>Q3Zap3</td></tr>
+					<tr><td id="Q3Zap1"></td><td id="Q3Zap2"></td><td id="Q3Zap3"></td></tr>
+					</table>
+				</div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree">
+                DIQ1 & DIQ2 & DIQ3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart6" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart7" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart8" style="width: 1500px; height: 600px"></div>
+				<div id="curve_chartSpecial" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sliceIntoChunks(arr, chunkSize) {
+        const res = [];
+        for (let i = 0; i < arr.length; i += chunkSize) {
+            const chunk = arr.slice(i, i + chunkSize);
+            res.push(chunk);
+        }
+        return res;
+    }
+	
+	function getChunks(blabla){
+		Arrays = new Array()
+		arr = new Array()
+		for (let i = 0; i < blabla.length; i += 1)
+		{
+			if(blabla[i][0] == "kq") 
+			{
+				arr = new Array()
+				Arrays.push(arr)
+			}
+			arr.push(blabla[i])
+		}
+		return Arrays
+	}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+</div> <!-- conteiner end -->
+</body>

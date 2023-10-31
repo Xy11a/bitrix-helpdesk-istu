@@ -1,0 +1,421 @@
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                Y & I
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart4" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart5" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart9" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseTwo">
+                Q1 & Q2 & Q3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart1" style="width: 1500px; height: 600px"></div>
+                <div style="display: flex; justify-content: center;">
+                    <table>
+                        <tr><td>Q1Zap1</td><td>Q1Zap2</td><td>Q1Zap3</td></tr>
+                        <tr><td id="Q1Zap1"></td><td id="Q1Zap2"></td><td id="Q1Zap3"></td></tr>
+                    </table>
+                </div>
+                <div id="curve_chart2" style="width: 1500px; height: 600px"></div>
+                <div style="display: flex; justify-content: center;">
+                    <table>
+                        <tr><td>Q2Zap1</td><td>Q2Zap2</td><td>Q2Zap3</td></tr>
+                        <tr><td id="Q2Zap1"></td><td id="Q2Zap2"></td><td id="Q2Zap3"></td></tr>
+                    </table>
+                </div>
+                <div id="curve_chart3" style="width: 1500px; height: 600px"></div>
+                <div style="display: flex; justify-content: center;">
+                    <table>
+                        <tr><td>Q3Zap1</td><td>Q3Zap2</td><td>Q3Zap3</td></tr>
+                        <tr><td id="Q3Zap1"></td><td id="Q3Zap2"></td><td id="Q3Zap3"></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree">
+                DIQ1 & DIQ2 & DIQ3
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <div id="curve_chart6" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart7" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chart8" style="width: 1500px; height: 600px"></div>
+                <div id="curve_chartSpecial" style="width: 1500px; height: 600px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+<script>
+    const Kob = 1;
+    const T1 = 1;
+    let m1, m2, m3, m4;
+    const dt = 0.01;
+    const g = 1;
+    const L = 25;
+    const tauob = 0.1;
+    let ns = tauob / dt;
+
+    function y_model(U, y1, z1) {
+        y1 = z1;
+        m1 = dt * (Kob / T1 * U - 1 / T1 * y1);
+        m2 = dt * (Kob / T1 * U - 1 / T1 * (y1 + m1 / 2));
+        m3 = dt * (Kob / T1 * U - 1 / T1 * (y1 + m2 / 2));
+        m4 = dt * (Kob / T1 * U - 1 / T1 * (y1 + m3));
+        z1 = z1 + 1 / 6 * (m1 + 2 * m2 + 2 * m3 + m4);
+
+        return [y1, z1];
+    }
+
+    function zap(i, ns, y1, mas, j) {
+
+        if (i >= ns) {
+            if (j >= (ns - 1)) j = 0;
+            j = j + 1;
+            y = mas[j];
+            mas[j] = y1;
+        } else {
+            mas[i] = y1;
+            y = 0;
+        }
+
+        return [y, j];
+    }
+
+    function u_pid(x, x_pr, dt, sumx, q_1, q_2, q_3) {
+        dx = (x - x_pr) / dt;
+        sumx = sumx + x * dt;
+        u = q_1 * x + q_2 * sumx + q_3 * dx;
+
+        return [u, sumx, dx];
+    }
+
+    function ksi_1_pid(x_x, x, x_pr, ksi_1, dt, sumx, q_1, q_2, q_3) {
+        //dksi_1 = ( ksi - ksi_1_pr)/dt;
+        dx = (x - x_pr) / dt;
+
+        //sum_ksi_1 = sum_ksi_1 + ksi_1*dt;
+        sumx = sumx + ksi_1 * dt;
+
+        u = x_x - q_1 * ksi_1 - q_2 * sumx - q_3 * dx;
+
+        return [u, sumx];
+    }
+
+    function ksi_2_pid(sumx_x, x, x_pr, ksi_2, dt, sumx, q_1, q_2, q_3) {
+
+        dx = (x - x_pr) / dt;
+
+        sumx = sumx + ksi_2 * dt;
+
+        u = sumx_x - q_1 * ksi_2 - q_2 * sumx - q_3 * dx;
+
+        return [u, sumx];
+    }
+
+    function ksi_3_pid(dx_x, x, x_pr, ksi_3, dt, sumx, q_1, q_2, q_3) {
+
+        dx = (x - x_pr) / dt;
+
+        sumx = sumx + ksi_3 * dt;
+
+        u = dx_x - q_1 * ksi_3 - q_2 * sumx - q_3 * dx;
+
+        return [u, sumx];
+    }
+
+    function zapusk(q1,q2,q3) {
+        let isStop = false;
+        let isFirstRun = true
+        let I=0;
+        let Ipred;
+        let sumI=0;
+        let h = 0.3;
+        let dI_dq1, dI_dq2, dI_dq3;
+        let x,y1,z1;
+        let kq =0;
+        let ksi_1, ksi_2, ksi_3;
+        let std;
+        let i,j=0;
+
+        let Igraph = new Array(['kq', 'I']);
+        let Ygraph = new Array(['kq', 'y']);
+
+        let Q1 = new Array(['kq', 'q1']);
+        let Q2 = new Array(['kq', 'q2']);
+        let Q3 = new Array(['kq', 'q3']);
+
+        let DI_Q1 = new Array(['kq', 'dIdq1']);
+        let DI_Q2 = new Array(['kq', 'dIdq2']);
+        let DI_Q3 = new Array(['kq', 'dIdq3']);
+
+        let sumx,dx,x_pr,u;
+
+        while(!isStop && kq < 100) {
+            Ipred=I;
+            std=0; I=0;
+            dI_dq1 = 0; dI_dq2 = 0; dI_dq3 = 0;
+            var y = 0;y1 = 0;z1=0;
+            i=0; j=0;
+
+            sumx = 0; dx = 0; x = 0;
+
+            ksi_1 = 0; ksi_2 = 0; ksi_3 = 0;
+
+            let du_dq_1 = 0; let du_dq_2 = 0; let du_dq_3 = 0;
+
+            let ksi_1_pr = 0; let ksi_2_pr = 0; let ksi_3_pr = 0;
+
+            let sum_ksi_1 = 0; let sum_ksi_2 = 0; let sum_ksi_3 = 0;
+
+            let KSI_1 = 0; let KSI_2 = 0; let KSI_3 = 0;
+
+            let i_ksi_1 = 0; let i_ksi_2 = 0; let i_ksi_3 = 0;
+
+            let j_ksi_1 = 0; let j_ksi_2 = 0; let j_ksi_3 = 0;
+
+            let z_11 = 0; let z_21 = 0; let z_31 = 0;
+
+            let mas = new Array(['y zap']);
+            let mas_ksi_1 = new Array(['ksi_1']);
+            let mas_ksi_2 = new Array(['ksi_2']);
+            let mas_ksi_3 = new Array(['ksi_3']);
+
+            while (std<L) {
+                std+=dt;
+                x_pr=x;
+                x=g-y;
+                ///
+
+                [u, sumx, dx] = u_pid(x, x_pr, dt, sumx, q1, q2, q3, dx);
+
+                [y1, z1] = y_model(u, y, z1);
+
+                i = i + 1;
+                [y, j] = zap(i, ns, y1, mas, j);
+
+                ///
+
+
+                if(isFirstRun) Ygraph.push([std, y])
+
+
+                I+=x*x*dt;
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //ksi_1
+
+                [du_dq_1, sum_ksi_1] = ksi_1_pid(x, KSI_1, ksi_1_pr, ksi_1, dt, sum_ksi_1, q1, q2, q3);
+
+                [ksi_1, z_11] = y_model(du_dq_1, KSI_1, z_11);
+
+                i_ksi_1 = i_ksi_1 + 1;
+                ksi_1_pr = KSI_1;
+                [KSI_1, j_ksi_1] = zap(i_ksi_1, ns, ksi_1, mas_ksi_1, j_ksi_1);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //ksi_2
+
+                [du_dq_2, sum_ksi_2] = ksi_2_pid(sumx, KSI_2, ksi_2_pr, ksi_2, dt, sum_ksi_2, q1, q2, q3);
+
+                [ksi_2, z_21] = y_model(du_dq_2, KSI_2, z_21);
+
+                i_ksi_2 = i_ksi_2 + 1;
+                ksi_2_pr = KSI_2;
+                [KSI_2, j_ksi_2] = zap(i_ksi_2, ns, ksi_2, mas_ksi_2, j_ksi_2);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //ksi_3
+
+                [du_dq_3, sum_ksi_3] = ksi_3_pid(dx, KSI_3, ksi_3_pr, ksi_3, dt, sum_ksi_3, q1, q2, q3);
+
+                [ksi_3, z_31] = y_model(du_dq_3, KSI_3, z_31);
+
+                i_ksi_3 = i_ksi_3 + 1;
+                ksi_3_pr = KSI_3;
+                [KSI_3, j_ksi_3] = zap(i_ksi_3, ns, ksi_3, mas_ksi_3, j_ksi_3);
+                dI_dq1 = dI_dq1 + (-2) * (x) * KSI_1 * dt;
+                dI_dq2 = dI_dq2 + (-2) * (x) * KSI_2 * dt;
+                dI_dq3 = dI_dq3 + (-2) * (x) * KSI_3 * dt;
+            }
+
+
+                sumI = dI_dq1 * dI_dq1 + dI_dq2 * dI_dq2 + dI_dq3 * dI_dq3;
+                sumI = Math.sqrt(sumI);
+
+                if(sumI <= 0.01)
+                {
+                    console.log(sumI.toFixed(9))
+                    isStop=true;
+                }
+
+                if (Ipred > I) h = h * 1.23;
+                else h = h / 2;
+
+                q1 = q1 - h * dI_dq1 / sumI;//это не те, которые мы подбирали оптимально
+                q2 = q2 - h * dI_dq2 / sumI;
+                q3 = q3 - h * dI_dq3 / sumI;
+
+
+                Q1.push([kq, q1]);
+                Q2.push([kq, q2]);
+                Q3.push([kq, q3]);
+
+                DI_Q1.push([kq, dI_dq1]);
+                DI_Q2.push([kq, dI_dq2]);
+                DI_Q3.push([kq, dI_dq3]);
+
+
+                Igraph.push([kq, I]);
+
+                kq+=1;
+                isFirstRun=false;
+        }
+
+        return {
+            Ygraph: Ygraph,
+            Q1: Q1,
+            Q2: Q2,
+            Q3: Q3,
+            DI_Q1: DI_Q1,
+            DI_Q2: DI_Q2,
+            DI_Q3: DI_Q3,
+            Igraph: Igraph,
+            kq: kq
+        }
+    }
+
+    let idealZap = zapusk(4.7,4.2,0.63)
+    let firstZap = zapusk(2,1.8,0.03)
+    let secondZap = zapusk(6,3,0.02)
+    let thirdZap = zapusk(3,2.5,0.8)
+
+
+
+
+
+
+
+
+    var dataY = putDataToPlot([firstZap.Ygraph,secondZap.Ygraph,thirdZap.Ygraph, idealZap.Ygraph],'Yzap');
+    var dataI = putDataToPlot([firstZap.Igraph,secondZap.Igraph,thirdZap.Igraph, idealZap.Igraph],'Izap');
+
+    var dataQ1 = putDataToPlot([firstZap.Q1,secondZap.Q1,thirdZap.Q1],'Q1zap');
+    var dataQ2 = putDataToPlot([firstZap.Q2,secondZap.Q2,thirdZap.Q2],'Q2zap');
+    var dataQ3 = putDataToPlot([firstZap.Q3,secondZap.Q3,thirdZap.Q3],'Q3zap');
+
+    var dataD1 = putDataToPlot([firstZap.DI_Q1,secondZap.DI_Q1,thirdZap.DI_Q1],'DI_DQ1zap');
+    var dataD2 = putDataToPlot([firstZap.DI_Q2,secondZap.DI_Q2,thirdZap.DI_Q2],'DI_DQ2zap');
+    var dataD3 = putDataToPlot([firstZap.DI_Q3,secondZap.DI_Q3,thirdZap.DI_Q3],'DI_DQ3zap');
+
+
+
+
+    const Ylegend = {
+        title: '',
+        xaxis: {
+            title: 'dt',
+        },
+        yaxis: {
+            title: 'y',
+        },
+    };
+    const Ilegend = {
+        title: '',
+        xaxis: {
+            title: 'kq',
+        },
+        yaxis: {
+            title: 'I',
+        },
+    };
+    const Qlegend = {
+        title: '',
+        xaxis: {
+            title: 'kq',
+        },
+        yaxis: {
+            title: 'Q',
+        },
+    };
+    const DQlegend = {
+        title: '',
+        xaxis: {
+            title: 'kq',
+        },
+        yaxis: {
+            title: 'DIDQ',
+        },
+    };
+
+    Plotly.newPlot('curve_chart4', dataY, Ylegend);
+    Plotly.newPlot('curve_chart5', dataI, Ilegend);
+
+    Plotly.newPlot('curve_chart1', dataQ1, Qlegend);
+    Plotly.newPlot('curve_chart2', dataQ2, Qlegend);
+    Plotly.newPlot('curve_chart3', dataQ3, Qlegend);
+
+    Plotly.newPlot('curve_chart6', dataD1, DQlegend);
+    Plotly.newPlot('curve_chart7', dataD2, DQlegend);
+    Plotly.newPlot('curve_chart8', dataD3, DQlegend);
+
+
+
+
+    function putDataToPlot(data,name) {
+        let count=0
+        let allTraces = []
+        data.forEach((el) => {
+
+
+            let xxx = new Array();
+            let yyy = new Array()
+
+            for (let i = 0; i <  el.length; i++)
+            {
+                xxx.push(el[i][0]);
+                yyy.push(el[i][1]);
+            }
+
+            let trace = {
+                name: name+count,
+                x: xxx,
+                y: yyy,
+                type: 'scatter'
+            };
+
+            count++;
+            allTraces.push(trace)
+        })
+
+        return allTraces
+    }
+
+</script>
+
+
+
