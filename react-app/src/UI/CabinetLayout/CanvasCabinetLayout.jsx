@@ -4,7 +4,14 @@ import {Image, Layer, Stage, Text} from "react-konva";
 import CanvasComponent from "./CanvasComponent";
 import useImage from "use-image";
 import Icon from "../Icon/Icon";
-import DeviceService from "../../API/DeviceService";
+import CanvasObjectService from "../../API/CanvasObjectService";
+
+
+export const getAllObjects = async (cabinet,objectList,setObjectList) => {
+    let allObjects = await CanvasObjectService.getAllCanvasObjectFromCabinet(cabinet.number)
+    setObjectList(parseObjects(allObjects,objectList))
+}
+
 
 const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
     const divRef = useRef(null)
@@ -15,6 +22,7 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
     ///////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
+        getAllObjects(cabinet,objectList,setObjectList)
         if (divRef.current?.offsetWidth) {
             setContainerWidth(divRef.current.firstChild.offsetWidth)
         }
@@ -35,13 +43,14 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
     const [tooltipVisible, setTooltipVisible] = useState(false)
 
     const createObject = (objectType) => {
-        let newDeviceName = objectType + "-" + (objectList.length + 1)
+        let newObjectName = objectType + "-" + (objectList.length + 1)
 
         let newObject = {
             id: null,
-            canvasId: 'rect' + newDeviceName,
-            deviceName: newDeviceName,
+            canvasId: 'rect' + newObjectName,
+            objectName: newObjectName,
             cabinet: cabinet.number,
+            type:objectType,
             shapeProps: {
                 x: 150,
                 y: 150,
@@ -57,13 +66,13 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
 
     const deleteObject = (id,devName) => {
         if(id){
-            DeviceService.deleteDeviceFromCabinet(id)
+            CanvasObjectService.deleteCanvasObjectFromCabinet(id)
         }
 
-        let newDeviceList = [...objectList]
-        newDeviceList=newDeviceList.filter((device) => device.deviceName !== devName)
+        let newObjectList = [...objectList]
+        newObjectList=newObjectList.filter((object) => object.objectName !== devName)
 
-        setObjectList(newDeviceList)
+        setObjectList(newObjectList)
     }
 
 
@@ -80,11 +89,12 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                             {objectList.map((rect) => {
                                 return (
                                     <CanvasComponent
-                                        componentName={rect.deviceName}
+                                        componentName={rect.objectName}
                                         setTooltipText={setTooltipText}
                                         setTooltipPosition={setTooltipPosition}
                                         setTooltipVisible={setTooltipVisible}
                                         imageUrl={"http://xyla.istu.webappz.ru/asu/kursach/files/rectangle.svg"}
+                                        dragAble={true}
                                         key={rect.canvasId}
                                         shapeProps={rect.shapeProps}
                                         isSelected={rect.canvasId === selectedId}
@@ -92,9 +102,9 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                                             selectShape(rect.canvasId);
                                         }}
                                         onChange={(newAttrs) => {
-                                            let newDevicesList = [...objectList];
-                                            newDevicesList.find((d) => d.canvasId === rect.canvasId).shapeProps = newAttrs
-                                            setObjectList(newDevicesList);
+                                            let newObjectList = [...objectList];
+                                            newObjectList.find((d) => d.canvasId === rect.canvasId).shapeProps = newAttrs
+                                            setObjectList(newObjectList);
                                         }}
                                     />
                                 );
@@ -127,17 +137,17 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                         <tbody>
                         {objectList.map((object, i) =>
                             <tr className='border border-black border-opacity-50 w-100 rounded-3' key={i}>
-                                <td className='px-2'>{object.deviceName}</td>
+                                <td className='px-2'>{object.objectName}</td>
                                 {object.id ? <td colSpan={100}>
                                         <div className='d-flex w-100 justify-content-end'>
-                                            <button type={"button"} className='btn btn-primary' onClick={()=> deleteObject(object.id,object.deviceName)}>
+                                            <button type={"button"} className='btn btn-danger' onClick={()=> deleteObject(object.id,object.objectName)}>
                                                 <Icon height={24} width={24} src={"/files/delete.svg"}/>
                                             </button>
                                         </div>
                                     </td> :
                                     <td colSpan={100}>
                                         <div className='d-flex w-100 justify-content-end'>
-                                            <button type={"button"} className='btn btn-primary' onClick={()=> deleteObject(null,object.deviceName)}>
+                                            <button type={"button"} className='btn btn-primary' onClick={()=> deleteObject(null,object.objectName)}>
                                                 <Icon height={24} width={24} src={"/files/eraser.svg"} />
                                             </button>
                                         </div>
@@ -147,11 +157,36 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                         </tbody>
                     </table>
 
-                    {/*<button className="btn btn-primary w-100 my-1" type={"submit"} onClick={()=> {DeviceService.addDeviceToCabinet(devicesList).then(()=>{updateCabinets(); getAll(cabinet,setDevicesList);})}}>Отправить</button>*/}
+                    <button className="btn btn-primary w-100 my-1" type={"submit"} onClick={()=> {CanvasObjectService.addCanvasObjectToCabinet(objectList).then(()=>{updateCabinets(); getAllObjects(cabinet,objectList,setObjectList);})}}>Отправить</button>
                 </form>
             </Block>
         </div>
     );
 };
+
+export function parseObjects(newElements) {
+    let newArr = []
+    newElements.forEach((elem) => {
+        let newObjectName = elem.type + "-" + (newArr.filter((el) => elem.type === el.type).length + 1)
+        let newObject = {
+            id: elem.id,
+            canvasId: 'rect' + newObjectName,
+            objectName: newObjectName,
+            cabinet: elem.cabinet,
+            type: elem.type,
+            shapeProps: {
+                x: parseFloat(elem.x),
+                y:  parseFloat(elem.y),
+                width: 150,
+                height: 100,
+                rotation:  parseFloat(elem.rotation),
+                scaleX:  parseFloat(elem.scaleX),
+                scaleY:  parseFloat(elem.scaleY),
+            }
+        }
+        newArr.push(newObject)
+    })
+    return newArr
+}
 
 export default CanvasCabinetLayout;

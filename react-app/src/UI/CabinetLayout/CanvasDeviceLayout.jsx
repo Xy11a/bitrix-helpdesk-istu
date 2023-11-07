@@ -5,7 +5,9 @@ import CanvasComponent from "./CanvasComponent";
 import useImage from "use-image";
 import DeviceService from "../../API/DeviceService";
 import Badge from "../Badge/Badge";
+import {getAllObjects} from "./CanvasCabinetLayout";
 import Icon from "../Icon/Icon";
+
 
 let imgLock = <img width={16} height={16} src={"/files/lock.svg"}/>
 let deviceTypes = [
@@ -42,13 +44,12 @@ let deviceTypes = [
     },
 ]
 
-const getAll = async (cabinet,setDevicesList) => {
+const getAll = async (cabinet, setDevicesList) => {
     let allDevices = await DeviceService.getAllDevicesFromCabinet(cabinet.number)
     setDevicesList(parseDevices(allDevices))
 }
 
-
-const CanvasDeviceLayout = ({cabinet,updateCabinets}) => {
+const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,10 +57,12 @@ const CanvasDeviceLayout = ({cabinet,updateCabinets}) => {
     const [containerWidth, setContainerWidth] = useState(0)
     const [devicesList, setDevicesList] = React.useState([]);
     const [selectedId, selectShape] = React.useState(null);
+    const [objectList, setObjectList] = useState([]);
 
 
     useEffect(() => {
-        getAll(cabinet,setDevicesList)
+        getAll(cabinet, setDevicesList)
+        getAllObjects(cabinet, objectList, setObjectList)
         if (divRef.current?.offsetWidth) {
             setContainerWidth(divRef.current.firstChild.offsetWidth)
         }
@@ -140,6 +143,19 @@ const CanvasDeviceLayout = ({cabinet,updateCabinets}) => {
                             <Image width={containerWidth} height={450} image={backgroundImage}/>
                         </Layer>
                         <Layer>
+                            {objectList.map((object) => {
+                                return (
+                                    <CanvasComponent
+                                        componentName={object.objectName}
+                                        imageUrl={"http://xyla.istu.webappz.ru/asu/kursach/files/rectangle.svg"}
+                                        key={object.canvasId}
+                                        dragAble={false}
+                                        shapeProps={object.shapeProps}
+                                    />
+                                )
+                            })}
+                        </Layer>
+                        <Layer>
                             {devicesList.map((rect) => {
                                 return (
                                     <CanvasComponent
@@ -196,12 +212,11 @@ const CanvasDeviceLayout = ({cabinet,updateCabinets}) => {
             <Block>
                 <form className='p-2' onSubmit={(e) => {
                     e.preventDefault()
-                    console.log(devicesList)
                 }}>
                     <table className='w-100'>
                         <tbody>
                         {devicesList.map((device, i) =>
-                            <tr className='border border-black border-opacity-50 w-100' key={i}>
+                            <tr className='border border-black border-opacity-50 w-100' key={device.deviceName+"i"}>
                                 <td className='border border-black px-2'>{device.deviceName}</td>
                                 {
                                     Object.keys(device.inputDataProps).map((input, j) =>
@@ -242,6 +257,8 @@ const CanvasDeviceLayout = ({cabinet,updateCabinets}) => {
         </div>
     );
 };
+
+
 
 
 function parseDevices(list) {

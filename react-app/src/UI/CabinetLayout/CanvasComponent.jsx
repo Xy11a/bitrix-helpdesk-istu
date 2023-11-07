@@ -2,7 +2,7 @@ import React from 'react';
 import {Image, Rect, Transformer} from "react-konva";
 import useImage from "use-image";
 
-const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName}) => {
+const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName, dragAble}) => {
 
     const [image] = useImage(imageUrl);
 
@@ -26,7 +26,7 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
                 onTap={onSelect}
                 ref={shapeRef}
                 {...shapeProps}
-                draggable
+                draggable={dragAble}
                 image={image}
                 onDragEnd={(e) => {
                     onChange({
@@ -62,16 +62,27 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
                 }}
 
                 onMouseMove={(e)=>{
-                    let mousePos = e.target.getStage().getPointerPosition();
-                    setTooltipVisible(true)
-                    setTooltipPosition({x: mousePos.x+10,y:mousePos.y-10})
-                    setTooltipText(componentName)
+                    if(setTooltipText!== undefined || setTooltipVisible !== undefined || setTooltipPosition !== undefined)
+                    {
+                        let mousePos = e.target.getStage().getPointerPosition();
+                        setTooltipVisible(true)
+                        setTooltipPosition({x: mousePos.x+10,y:mousePos.y-10})
+                        setTooltipText(componentName)
+                    }
 
                 }}
 
-                onMouseOut={evt => {setTooltipVisible(false)}}
+                onMouseOut={evt => {
+                    if(setTooltipVisible!== undefined){
+                        setTooltipVisible(false)
+                    }
+                }}
 
-                onDragMove={evt => {setTooltipVisible(false)}}
+                onDragMove={evt => {
+                    if(setTooltipVisible!== undefined){
+                        setTooltipVisible(false)
+                    }
+                }}
             />
             {isSelected && (
                 <Transformer
