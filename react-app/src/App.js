@@ -4,7 +4,7 @@ import Header from "./UI/Header/Header";
 import StartPage from "./UI/Pages/StartPage";
 import CreateCabinetPage from "./UI/Pages/CreateCabinetPage";
 import RequestManagePage from "./UI/Pages/RequestManagePage";
-import RequestConstructor from "./UI/Pages/RequestConstructor";
+import RequestConstructorPage from "./UI/Pages/RequestConstructorPage";
 import CreateRequestPage from "./UI/Pages/CreateRequestPage";
 
 
@@ -19,7 +19,7 @@ export default function App() {
             case 'request-create':
                 return <CreateRequestPage/>;
             case 'request-constructor':
-                return <RequestConstructor/>;
+                return <RequestConstructorPage/>;
             case 'create-cabinet':
                 return <CreateCabinetPage/>;
         }

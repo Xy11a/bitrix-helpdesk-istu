@@ -8,7 +8,6 @@ const CabinetLayout = ({selectedCabinet, updateCabinets}) => {
 
     const [planMode, setPlanMode] = useState("device-layout")
 
-
     return ( selectedCabinet ?
         <div>
             <Block>

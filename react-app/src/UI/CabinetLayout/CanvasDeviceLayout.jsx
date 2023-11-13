@@ -85,31 +85,38 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
     const [tooltipText, setTooltipText] = useState("")
     const [tooltipPosition, setTooltipPosition] = useState({x: 0, y: 0})
     const [tooltipVisible, setTooltipVisible] = useState(false)
+    const [canCreateDevice,setCanCreateDevice] = useState(true)
+    const [successMessage,setSuccessMessage] = useState(false)
+    const [errorMessage,setErrorMessage] = useState(false)
+
 
     const createNewDevice = (deviceType) => {
-        let newDeviceName = deviceType.type + "-" + (devicesList.filter((el) => el.type === deviceType.type).length + 1)
-
-        let newDevice = {
-            id: null,
-            canvasId: 'rect' + newDeviceName,
-            deviceName: newDeviceName,
-            cabinet: cabinet.number,
-            type: deviceType.type,
-            data: deviceType.data,
-            inputDataProps: deviceType.inputDataProps,
-            shapeProps: {
-                x: 150,
-                y: 150,
-                width: 150,
-                height: 100,
-                rotation: 0,
-                scaleX: 1,
-                scaleY: 1,
+        setSuccessMessage(false)
+        if(canCreateDevice) {
+            setCanCreateDevice(false)
+            let newDeviceName = deviceType.type + "-" + (devicesList.filter((el) => el.type === deviceType.type).length + 1)
+            let newDevice = {
+                id: null,
+                canvasId: 'rect' + newDeviceName,
+                deviceName: newDeviceName,
+                cabinet: cabinet.number,
+                type: deviceType.type,
+                data: deviceType.data,
+                inputDataProps: deviceType.inputDataProps,
+                shapeProps: {
+                    x: 150,
+                    y: 150,
+                    width: 150,
+                    height: 100,
+                    rotation: 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                }
             }
-        }
 
 
-        setDevicesList([...devicesList, newDevice])
+            setDevicesList([...devicesList, newDevice])
+        } else { setErrorMessage(true)}
     }
 
     const updateDeviceInputs = (deviceName, deviceDataKey, value) => {
@@ -159,6 +166,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                             {devicesList.map((rect) => {
                                 return (
                                     <CanvasComponent
+                                        dragAble={true}
                                         componentName={rect.deviceName}
                                         setTooltipText={setTooltipText}
                                         setTooltipPosition={setTooltipPosition}
@@ -207,6 +215,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                             </button>
                         </Badge>
                     </div>
+                    <div>{ errorMessage ? <div className='p-2 bg-warning text-white rounded-3 text-center'>Внимание! На плане есть не заполненое устройство.</div> : ""}</div>
                 </Block>
             </div>
             <Block>
@@ -220,7 +229,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                                 <td className='border border-black px-2'>{device.deviceName}</td>
                                 {
                                     Object.keys(device.inputDataProps).map((input, j) =>
-                                        <td className='border border-black border-opacity-50' key={j}>
+                                        <td className='border-start border-black border-opacity-50' key={j}>
                                             <input
                                                 className='form-control'
                                                 value={device.data[input] ? device.data[input] : ""}
@@ -234,14 +243,14 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                                     )}
                                 {device.id ? <td colSpan={100}>
                                     <div className='d-flex w-100 justify-content-end'>
-                                        <button type={"button"} className='btn btn-primary' onClick={()=> deleteDevice(device.id,device.deviceName)}>
+                                        <button type={"button"} className='btn btn-danger' onClick={()=> deleteDevice(device.id,device.deviceName)}>
                                             <Icon height={24} width={24} src={"/files/delete.svg"}/>
                                         </button>
                                     </div>
                                 </td> :
                                     <td colSpan={100}>
                                         <div className='d-flex w-100 justify-content-end'>
-                                            <button type={"button"} className='btn btn-primary' onClick={()=> deleteDevice(null,device.deviceName)}>
+                                            <button type={"button"} className='btn btn-primary' onClick={()=> {deleteDevice(null,device.deviceName);setErrorMessage(false); setCanCreateDevice(true);} }>
                                                 <Icon height={24} width={24} src={"/files/eraser.svg"} />
                                             </button>
                                         </div>
@@ -251,8 +260,18 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                         </tbody>
                     </table>
 
-                    <button className="btn btn-primary w-100 my-1" type={"submit"} onClick={()=> {DeviceService.addDeviceToCabinet(devicesList).then(()=>{updateCabinets(); getAll(cabinet,setDevicesList);})}}>Отправить</button>
+                    <button className="btn btn-primary w-100 my-1" type={"submit"} onClick={
+                        ()=> {
+                            DeviceService.addDeviceToCabinet(devicesList).then(()=>{
+                                setErrorMessage(false)
+                                setSuccessMessage(true)
+                                updateCabinets();
+                                setCanCreateDevice(true);
+                                getAll(cabinet,setDevicesList);
+                            })}}>Отправить</button>
+                    { successMessage ? <div className='p-2 bg-success text-white w-100 rounded-3 text-center'>Данные загружены!</div> : ""}
                 </form>
+
             </Block>
         </div>
     );
