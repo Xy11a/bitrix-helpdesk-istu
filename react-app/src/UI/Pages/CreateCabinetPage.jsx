@@ -3,9 +3,9 @@ import Block from "../Block/Block";
 import CRUD from "../CRUD/CRUD";
 import CabinetService from "../../API/CabinetService";
 import CabinetLayout from "../CabinetLayout/CabinetLayout";
-import CabinetCreateForm from "../Form/CabinetCreateForm";
-import CabinetEditForm from "../Form/CabinetEditForm";
-import CabinetDeleteForm from "../Form/CabinetDeleteForm";
+import CabinetCreateForm from "../Form/Cabinet/CabinetCreateForm";
+import CabinetEditForm from "../Form/Cabinet/CabinetEditForm";
+import CabinetDeleteForm from "../Form/Cabinet/CabinetDeleteForm";
 
 let cabinetsJson = await CabinetService.getAllCabinets()
 let dataProps = {

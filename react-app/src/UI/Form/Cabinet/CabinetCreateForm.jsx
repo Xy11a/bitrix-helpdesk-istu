@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import CabinetService from "../../API/CabinetService";
+import CabinetService from "../../../API/CabinetService";
 
 const CabinetCreateForm = ({cabinetData, readCabinets}) => {
 

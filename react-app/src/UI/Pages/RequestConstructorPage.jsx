@@ -2,8 +2,10 @@ import React, {useEffect, useState} from 'react';
 import Block from "../Block/Block";
 import CRUD from "../CRUD/CRUD";
 import CreateRequestTemplate from "../Request/CreateRequestTemplate";
-import CreateRequestTemplateForm from "../Request/CRUDForms/createRequestTemplateForm";
+import CreateRequestTemplateForm from "../Form/RequestTemplate/CreateRequestTemplateForm";
 import RequestTemplate from "../../API/RequestTemplate";
+import EditRequestTemplateForm from "../Form/RequestTemplate/EditRequestTemplateForm";
+import DeleteRequestTemplateForm from "../Form/RequestTemplate/DeleteRequestTemplateForm";
 
 const getData = async (setRequestTemplates) => {
     let data = await RequestTemplate.getAllRequestTemplates()
@@ -55,9 +57,9 @@ const RequestConstructorPage = () => {
             case "create":
                 return <CreateRequestTemplateForm list={requestTemplates} read={readRequestsTemplate}/>
             case "update":
-                return <div>sadas2</div>
+                return <div><EditRequestTemplateForm/></div>
             case "delete":
-                return <div>sadas3</div>
+                return <div><DeleteRequestTemplateForm selectedItem={selectedItem} read={readRequestsTemplate}/></div>
         }
     }
 
@@ -70,7 +72,7 @@ const RequestConstructorPage = () => {
             <CRUD data={requestTemplates} CRUDToolBarFunction={CRUDToolbar} dataProps={dataProps}
                   setSelection={setSelectedItem}/>
 
-            {selectedItem ? <CreateRequestTemplate template={selectedItem} updateRequestTemplate={updateRequests}/> : <Block>Выберите шаблон</Block>}
+            {selectedItem ? <CreateRequestTemplate template={selectedItem}  updateRequestTemplate={updateRequests}/> : <Block>Выберите шаблон</Block>}
 
 
         </div>

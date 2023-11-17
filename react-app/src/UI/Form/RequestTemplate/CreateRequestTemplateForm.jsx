@@ -7,8 +7,8 @@ let requestTemplate = {
     type: "Программное обеспечение",
     id: null,
     options: {cabinets: false, note: false},
-    inputDataProps: null,
-    data: null
+    inputDataProps: [],
+    data: []
 }
 
 let requestTypes = ["Программное обеспечение","Учетная деятельность","Техническое обслуживание","Подключение к системе / создание УЗ"]
@@ -17,19 +17,19 @@ const CreateRequestTemplateForm = ({list,read}) => {
 
     const [template, setTemplate] = useState(requestTemplate);
 
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault()
         if(canCreate) {
-            RequestTemplate.addRequestTemplate(template);
+            RequestTemplate.addRequestTemplate(template).then((res)=> read())
         }
-        read()
+
     }
 
 
 
 
     return (
-        <form onSubmit={(e => submitForm(e))}>
+        <form className='border border-black border-opacity-50 rounded-3 px-2 py-2' onSubmit={(e => submitForm(e))}>
             <h5>Создать шаблон заявки</h5>
             <label>Название заявки</label>
             <input type='text' value={template.name === "" ? "" : template.name} className='form-control'

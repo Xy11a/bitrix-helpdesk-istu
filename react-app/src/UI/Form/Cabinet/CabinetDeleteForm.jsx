@@ -1,5 +1,5 @@
 import React from 'react';
-import CabinetService from "../../API/CabinetService";
+import CabinetService from "../../../API/CabinetService";
 
 const CabinetDeleteForm = ({selection,deleteFunction}) => {
     return (

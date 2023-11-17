@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import Icon from "../../Icon/Icon";
 import ToolBar from "./ToolBar";
-import CabinetEditForm from "../../Form/CabinetEditForm";
-import CabinetCreateForm from "../../Form/CabinetCreateForm";
-import CabinetDeleteForm from "../../Form/CabinetDeleteForm";
+import CabinetEditForm from "../../Form/Cabinet/CabinetEditForm";
+import CabinetCreateForm from "../../Form/Cabinet/CabinetCreateForm";
+import CabinetDeleteForm from "../../Form/Cabinet/CabinetDeleteForm";
 import CabinetDeviceMenu from "./CabinetDeviceMenu";
 import {Tooltip} from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css'
