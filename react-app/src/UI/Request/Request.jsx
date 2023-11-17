@@ -1,4 +1,5 @@
 import React from 'react';
+import RequestCabinetInput from "./RequestCabinetInput";
 
 let customInputTypeList = []
 
@@ -10,6 +11,9 @@ const Request = ({template}) => {
                 <h2>Заполните форму:</h2>
                 <ContactsInputs/>
                 <CustomInputs inputDataProps={template.inputDataProps}/>
+                {template.options.note ? <AddNote/> : ""}
+                {template.options.cabinets ? <RequestCabinetInput/> : ""}
+
             </div>
         </div>
     );
@@ -41,6 +45,15 @@ const ContactsInputs = () => {
             </div>
         </div>
     )
+}
+
+const AddNote = () => {
+  return (
+      <div>
+          <div>Примечание(500 символов):</div>
+          <textarea className='w-100' style={{height: "200px"}} maxLength={500}/>
+      </div>
+  )
 }
 
 const CustomInputs = ({inputDataProps}) => {

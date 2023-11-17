@@ -6,11 +6,16 @@ import CreateInput from "./CreateInput";
 
 const CreateRequestTemplate = ({template,updateRequestTemplate}) => {
 
-    const [options, setOptions] = useState(template.options);
     const [createInputType, setCreateInputType] = useState("text");
 
+    const updateOptions = (newOptions) => {
+        template.options = newOptions
+        updateRequestTemplate(template.id,template)
+    }
+
+
     useEffect(() => {
-        setOptions(template.options)
+
     }, [template])
 
 
@@ -38,11 +43,11 @@ const CreateRequestTemplate = ({template,updateRequestTemplate}) => {
                 <h3 className='text-center'>Опции заявки</h3>
                 <div className='d-flex justify-content-between flex-wrap'>
                     <div className="form-check form-switch">
-                        <input className="form-check-input" type="checkbox" role="switch" checked={options.cabinets} onChange={(e => setOptions({...options, cabinets: !options.cabinets}))} />
+                        <input className="form-check-input" type="checkbox" role="switch" checked={template.options.cabinets} onChange={(e => updateOptions({...template.options, cabinets: !template.options.cabinets}))} />
                         <label className="form-check-label" >Привязка кабинетов к заявке?</label>
                     </div>
                     <div className="form-check form-switch">
-                        <input className="form-check-input" type="checkbox" role="switch" checked={options.note} onChange={(e => setOptions({...options, note: !options.note}))} />
+                        <input className="form-check-input" type="checkbox" role="switch" checked={template.options.note} onChange={(e => updateOptions({...template.options, note: !template.options.note}))} />
                         <label className="form-check-label" >Добавить примечание?</label>
                     </div>
                 </div>
