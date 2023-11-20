@@ -9,6 +9,11 @@ export default class CabinetService {
         return response.data;
     }
 
+    static async getCabinet(cabinetNumber) {
+        const response = await axios.get(this.apiLink + "getCabinet.php?number="+cabinetNumber)
+        return response.data;
+    }
+
     static async addCabinet(number) {
         const createCab = await axios.post(this.apiLink + "createCabinet.php", number)
         return createCab

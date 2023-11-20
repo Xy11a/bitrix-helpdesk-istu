@@ -280,7 +280,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
 
 
 
-function parseDevices(list) {
+export function parseDevices(list) {
     let deviceArr = []
     list.forEach((el) => {
         let newDeviceName = el.type + "-" + (deviceArr.filter((elem) => elem.type === el.type).length + 1)

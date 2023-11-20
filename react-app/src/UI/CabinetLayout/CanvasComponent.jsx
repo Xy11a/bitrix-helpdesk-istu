@@ -1,13 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, Rect, Transformer} from "react-konva";
 import useImage from "use-image";
 
-const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName, dragAble}) => {
+const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName, dragAble,strokable}) => {
 
     const [image] = useImage(imageUrl);
+    const [stroke,setStroke] = useState(false);
 
     const shapeRef = React.useRef();
     const trRef = React.useRef();
+
+    const onClick = () => {
+        if(onSelect !== undefined) onSelect()
+        if (strokable !== undefined){
+            setStroke(!stroke)
+        }
+    }
 
     React.useEffect(() => {
         if (isSelected) {
@@ -22,8 +30,10 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
             <Image
                 width={15}
                 height={0}
-                onClick={onSelect}
-                onTap={onSelect}
+                onClick={onClick}
+                onTap={onClick}
+                stroke={stroke ? "green" : ""}
+                strokeWidth={stroke ? 5 : 0}
                 ref={shapeRef}
                 {...shapeProps}
                 draggable={dragAble}
@@ -83,6 +93,8 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
                         setTooltipVisible(false)
                     }
                 }}
+
+
             />
             {isSelected && (
                 <Transformer

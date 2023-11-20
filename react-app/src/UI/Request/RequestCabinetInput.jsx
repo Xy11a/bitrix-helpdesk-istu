@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import CabinetService from "../../API/CabinetService";
+import CabinetDeviceLayoutSelect from "../CabinetLayout/CabinetDeviceLayoutSelect";
 
 let cabinetsJson = await CabinetService.getAllCabinets()
 let getCabinetsNumbers = () => {
@@ -11,6 +12,7 @@ let cabinets = getCabinetsNumbers()
 const RequestCabinetInput = () => {
 
     const [cabinet, setCabinet] = useState(cabinets[0])
+
         //TODO узнать почему ломаються объекты
 
     return (
@@ -27,6 +29,9 @@ const RequestCabinetInput = () => {
 
 
             <div>{cabinet}</div>
+            <div>
+                <CabinetDeviceLayoutSelect cabinet={cabinetsJson.find((el)=> el.number === cabinet)} />
+            </div>
         </div>
     );
 };
