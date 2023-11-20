@@ -2,27 +2,31 @@ import React, {useState} from 'react';
 import CabinetService from "../../API/CabinetService";
 
 let cabinetsJson = await CabinetService.getAllCabinets()
-
+let getCabinetsNumbers = () => {
+    let arr = []
+    cabinetsJson.forEach((el)=> arr.push(el.number))
+    return arr
+}
+let cabinets = getCabinetsNumbers()
 const RequestCabinetInput = () => {
 
-    const [cabinet, setCabinet] = useState(cabinetsJson[0])
+    const [cabinet, setCabinet] = useState(cabinets[0])
         //TODO узнать почему ломаються объекты
 
     return (
         <div className='mt-2'>
-            <select className='form-select' onChange={(e)=> setCabinet(e.target.value)} >
-                {cabinetsJson.map((cabinetOption,index)=> {
-                    console.log(cabinetOption)
+            <select className='form-select' value={cabinet} onChange={(e)=> setCabinet(e.target.value)} >
+                {cabinets.map((cabinetOption,index)=> {
                     return (
-                        <option key={index} value={cabinetOption}>
-                            Кабинет: {cabinetOption.number} -- Количество устройств: {cabinetOption.deviceCount}
+                        <option key={index}>
+                            {cabinetOption}
                         </option>
                     )
                 })}
             </select>
 
 
-            <div>{cabinet.number}</div>
+            <div>{cabinet}</div>
         </div>
     );
 };

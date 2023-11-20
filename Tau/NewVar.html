@@ -74,7 +74,7 @@
     const Kob = 1;
     const T1 = 1;
     let m1, m2, m3, m4;
-    const dt = 0.01;
+    const dt = 0.001;
     const g = 1;
     const L = 25;
     const tauob = 0.1;
@@ -148,11 +148,11 @@
         return [u, sumx];
     }
 
-    function zapusk(q1,q2,q3) {
+    function zapusk(q1,q2,q3, method) {
         let isStop = false;
         let isFirstRun = true
         let I=0;
-        let Ipred;
+        let Ipred = 0;
         let sumI=0;
         let h = 0.3;
         let dI_dq1, dI_dq2, dI_dq3;
@@ -175,7 +175,9 @@
 
         let sumx,dx,x_pr,u;
 
-        while(!isStop && kq < 100) {
+        let dI_dq1_old,dI_dq2_old,dI_dq3_old
+
+        while(!isStop && kq < 150) {
             Ipred=I;
             std=0; I=0;
             dI_dq1 = 0; dI_dq2 = 0; dI_dq3 = 0;
@@ -205,6 +207,7 @@
             let mas_ksi_2 = new Array(['ksi_2']);
             let mas_ksi_3 = new Array(['ksi_3']);
 
+
             while (std<L) {
                 std+=dt;
                 x_pr=x;
@@ -226,48 +229,59 @@
 
                 I+=x*x*dt;
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //ksi_1
+                if(method==="Gradient" || method === "Relaxation" || (method==="FastestDown" && I >= Ipred)) {
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //ksi_1
 
-                [du_dq_1, sum_ksi_1] = ksi_1_pid(x, KSI_1, ksi_1_pr, ksi_1, dt, sum_ksi_1, q1, q2, q3);
+                    [du_dq_1, sum_ksi_1] = ksi_1_pid(x, KSI_1, ksi_1_pr, ksi_1, dt, sum_ksi_1, q1, q2, q3);
 
-                [ksi_1, z_11] = y_model(du_dq_1, KSI_1, z_11);
+                    [ksi_1, z_11] = y_model(du_dq_1, KSI_1, z_11);
 
-                i_ksi_1 = i_ksi_1 + 1;
-                ksi_1_pr = KSI_1;
-                [KSI_1, j_ksi_1] = zap(i_ksi_1, ns, ksi_1, mas_ksi_1, j_ksi_1);
+                    i_ksi_1 = i_ksi_1 + 1;
+                    ksi_1_pr = KSI_1;
+                    [KSI_1, j_ksi_1] = zap(i_ksi_1, ns, ksi_1, mas_ksi_1, j_ksi_1);
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //ksi_2
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //ksi_2
 
-                [du_dq_2, sum_ksi_2] = ksi_2_pid(sumx, KSI_2, ksi_2_pr, ksi_2, dt, sum_ksi_2, q1, q2, q3);
+                    [du_dq_2, sum_ksi_2] = ksi_2_pid(sumx, KSI_2, ksi_2_pr, ksi_2, dt, sum_ksi_2, q1, q2, q3);
 
-                [ksi_2, z_21] = y_model(du_dq_2, KSI_2, z_21);
+                    [ksi_2, z_21] = y_model(du_dq_2, KSI_2, z_21);
 
-                i_ksi_2 = i_ksi_2 + 1;
-                ksi_2_pr = KSI_2;
-                [KSI_2, j_ksi_2] = zap(i_ksi_2, ns, ksi_2, mas_ksi_2, j_ksi_2);
+                    i_ksi_2 = i_ksi_2 + 1;
+                    ksi_2_pr = KSI_2;
+                    [KSI_2, j_ksi_2] = zap(i_ksi_2, ns, ksi_2, mas_ksi_2, j_ksi_2);
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //ksi_3
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //ksi_3
 
-                [du_dq_3, sum_ksi_3] = ksi_3_pid(dx, KSI_3, ksi_3_pr, ksi_3, dt, sum_ksi_3, q1, q2, q3);
+                    [du_dq_3, sum_ksi_3] = ksi_3_pid(dx, KSI_3, ksi_3_pr, ksi_3, dt, sum_ksi_3, q1, q2, q3);
 
-                [ksi_3, z_31] = y_model(du_dq_3, KSI_3, z_31);
+                    [ksi_3, z_31] = y_model(du_dq_3, KSI_3, z_31);
 
-                i_ksi_3 = i_ksi_3 + 1;
-                ksi_3_pr = KSI_3;
-                [KSI_3, j_ksi_3] = zap(i_ksi_3, ns, ksi_3, mas_ksi_3, j_ksi_3);
-                dI_dq1 = dI_dq1 + (-2) * (x) * KSI_1 * dt;
-                dI_dq2 = dI_dq2 + (-2) * (x) * KSI_2 * dt;
-                dI_dq3 = dI_dq3 + (-2) * (x) * KSI_3 * dt;
+                    i_ksi_3 = i_ksi_3 + 1;
+                    ksi_3_pr = KSI_3;
+                    [KSI_3, j_ksi_3] = zap(i_ksi_3, ns, ksi_3, mas_ksi_3, j_ksi_3);
+                    dI_dq1 = dI_dq1 + (-2) * (x) * KSI_1 * dt;
+                    dI_dq2 = dI_dq2 + (-2) * (x) * KSI_2 * dt;
+                    dI_dq3 = dI_dq3 + (-2) * (x) * KSI_3 * dt;
+                }
             }
+
+            if(method==="FastestDown" && !(I >= Ipred)) {
+                dI_dq1 = dI_dq1_old
+                dI_dq2 = dI_dq2_old
+                dI_dq3 = dI_dq3_old
+            }
+            dI_dq1_old = dI_dq1
+            dI_dq2_old = dI_dq2
+            dI_dq3_old = dI_dq3
 
 
                 sumI = dI_dq1 * dI_dq1 + dI_dq2 * dI_dq2 + dI_dq3 * dI_dq3;
                 sumI = Math.sqrt(sumI);
 
-                if(sumI <= 0.01)
+                if(sumI <= 0.001)
                 {
                     console.log(sumI.toFixed(9))
                     isStop=true;
@@ -276,9 +290,20 @@
                 if (Ipred > I) h = h * 1.23;
                 else h = h / 2;
 
-                q1 = q1 - h * dI_dq1 / sumI;//это не те, которые мы подбирали оптимально
-                q2 = q2 - h * dI_dq2 / sumI;
-                q3 = q3 - h * dI_dq3 / sumI;
+                if(method === "Gradient" || method === "FastestDown") {
+                    q1 = q1 - h * dI_dq1 / sumI;//это не те, которые мы подбирали оптимально
+                    q2 = q2 - h * dI_dq2 / sumI;
+                    q3 = q3 - h * dI_dq3 / sumI;
+                }
+
+                if(method === "Relaxation") {
+                    let d1 = Math.abs(dI_dq1);
+                    let d2 = Math.abs(dI_dq2);
+                    let d3 = Math.abs(dI_dq3);
+                    if(d1 > d2 && d1>d3) {q1 = q1 - h * dI_dq1 / sumI;}
+                    if(d2 > d1 && d2>d3) {q2 = q2 - h * dI_dq2 / sumI;}
+                    if(d3 > d1 && d3>d2) {q3 = q3 - h * dI_dq3 / sumI;}
+                }
 
 
                 Q1.push([kq, q1]);
@@ -309,10 +334,20 @@
         }
     }
 
-    let idealZap = zapusk(4.7,4.2,0.63)
-    let firstZap = zapusk(2,1.8,0.03)
-    let secondZap = zapusk(6,3,0.02)
-    let thirdZap = zapusk(3,2.5,0.8)
+     // let idealZap = zapusk(4.7,4.2,0.63,"Gradient")
+     // let firstZap = zapusk(2,1.8,0.03,"Gradient")
+     // let secondZap = zapusk(6,3,0.02,"Gradient")
+     // let thirdZap = zapusk(3,2.5,0.8,"Gradient")
+
+    let idealZap = zapusk(4.7,4.2,0.63,"FastestDown")
+    let firstZap = zapusk(2,1.8,0.03,"FastestDown")
+    let secondZap = zapusk(6,3,0.02,"FastestDown")
+    let thirdZap = zapusk(3,2.5,0.8,"FastestDown")
+
+    // let idealZap = zapusk(4.7,4.2,0.63,"Relaxation")
+    // let firstZap = zapusk(2,1.8,0.03,"Relaxation")
+    // let secondZap = zapusk(6,3,0.02,"Relaxation")
+    // let thirdZap = zapusk(3,2.5,0.8,"Relaxation")
 
 
 
