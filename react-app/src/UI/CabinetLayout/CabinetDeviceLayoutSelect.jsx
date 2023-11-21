@@ -5,6 +5,7 @@ import CanvasComponent from "./CanvasComponent";
 import {getAllObjects} from "./CanvasCabinetLayout";
 import DeviceService from "../../API/DeviceService";
 import {parseDevices} from "./CanvasDeviceLayout";
+import Icon from "../Icon/Icon";
 
 
 let deviceTypes = [
@@ -53,6 +54,7 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
     const [tooltipPosition, setTooltipPosition] = useState({x: 0, y: 0})
     const [tooltipVisible, setTooltipVisible] = useState(false)
     const [devicesList, setDevicesList] = React.useState([]);
+    const [selectedDeviceList, setSelectedDeviceList] = useState([])
 
 
     useEffect(() => {
@@ -62,8 +64,6 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
             setContainerWidth(divRef.current.firstChild.offsetWidth)
         }
     }, [cabinet])
-
-
 
 
     const getAll = async (cabinet, setDevicesList) => {
@@ -78,7 +78,6 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
             selectShape(null);
         }
     };
-
 
 
     return (
@@ -113,16 +112,16 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
                                 imageUrl={deviceTypes.find((t) => t.type === rect.type).iconLink}
                                 key={rect.canvasId}
                                 shapeProps={rect.shapeProps}
-                                // isSelected={rect.canvasId === selectedId}
-                                // onSelect={() => {
-                                //     selectShape(rect.canvasId);
-                                //
-                                // }}
-                                // onChange={(newAttrs) => {
-                                //     let newDevicesList = [...devicesList];
-                                //     newDevicesList.find((d) => d.canvasId === rect.canvasId).shapeProps = newAttrs
-                                //     setDevicesList(newDevicesList);
-                                // }}
+                                onSelection={(flag) => {
+                                    if (flag) {
+                                        setSelectedDeviceList([...selectedDeviceList, rect.id])
+                                    } else {
+                                        let newSelection = [...selectedDeviceList]
+                                        newSelection = newSelection.filter((el)=> el !== rect.id)
+                                        setSelectedDeviceList([...newSelection])
+                                    }
+                                    console.log(selectedDeviceList)
+                                }}
                                 strokable={true}
                             />
                         );
@@ -133,9 +132,33 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
                           stroke='black' visible={tooltipVisible} x={tooltipPosition.x} y={tooltipPosition.y}/>
                 </Layer>
             </Stage>
-
-
-
+            <div>
+                <table className='w-100'>
+                    <tbody>
+                    {
+                        devicesList.filter((el)=> selectedDeviceList.includes(el.id)).map((device, i) =>
+                            <tr className='border border-black border-opacity-50 w-100' key={device.deviceName + "i"}>
+                                <td className='border border-black px-2'>{device.deviceName}</td>
+                                {
+                                    Object.keys(device.inputDataProps).map((input, j) =>
+                                        <td className='border-start border-black border-opacity-50' key={j}>
+                                            <input
+                                                className='form-control'
+                                                value={device.data[input] ? device.data[input] : ""}
+                                                type={device.inputDataProps[input].type}
+                                                name={device.inputDataProps[input].name + device.deviceName[device.deviceName.length - 1]}
+                                                placeholder={device.inputDataProps[input].placeholder}
+                                                required={true}
+                                                readOnly={true}
+                                            />
+                                        </td>
+                                    )
+                                }
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
