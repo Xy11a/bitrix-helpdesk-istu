@@ -3,12 +3,12 @@ import Block from "../Block/Block";
 import CRUD from "../CRUD/CRUD";
 import CreateRequestTemplate from "../Request/CreateRequestTemplate";
 import CreateRequestTemplateForm from "../Form/RequestTemplate/CreateRequestTemplateForm";
-import RequestTemplate from "../../API/RequestTemplate";
+import RequestTemplateService from "../../API/RequestTemplateService";
 import EditRequestTemplateForm from "../Form/RequestTemplate/EditRequestTemplateForm";
 import DeleteRequestTemplateForm from "../Form/RequestTemplate/DeleteRequestTemplateForm";
 
 const getData = async (setRequestTemplates) => {
-    let data = await RequestTemplate.getAllRequestTemplates()
+    let data = await RequestTemplateService.getAllRequestTemplates()
     setRequestTemplates(data)
 }
 
@@ -72,7 +72,7 @@ const RequestConstructorPage = () => {
             <CRUD data={requestTemplates} CRUDToolBarFunction={CRUDToolbar} dataProps={dataProps}
                   setSelection={setSelectedItem}/>
 
-            {selectedItem ? <CreateRequestTemplate template={selectedItem}  updateRequestTemplate={updateRequests}/> : <Block>Выберите шаблон</Block>}
+            {selectedItem ? <CreateRequestTemplate template={selectedItem} setSelection={setSelectedItem}  updateRequestTemplate={updateRequests}  read={readRequestsTemplate}/> : <Block>Выберите шаблон</Block>}
 
 
         </div>

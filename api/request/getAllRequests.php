@@ -9,7 +9,7 @@ $dbname = "DB2022_xyla";
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 
-$sql = "SELECT name,type,id,inputDataProps,options FROM RequestTemplate";
+$sql = "SELECT * FROM Request";
 $result = mysqli_query($conn, $sql);
 
 $arr = array();

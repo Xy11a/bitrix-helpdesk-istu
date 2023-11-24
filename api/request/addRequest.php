@@ -14,27 +14,25 @@ $json = file_get_contents('php://input');
 $json_data = json_decode($json, true);// Converts it into a PHP object
 
 
-
-
 foreach ($json_data as $value) {
 
     $id = $value["id"];
-    $name = $value["name"];
-    $type = $value["type"];
-    $inputDataProps = json_encode($value["inputDataProps"],JSON_UNESCAPED_UNICODE);
-    $options = json_encode($value["options"],JSON_UNESCAPED_UNICODE);
+    $template = $value["templateId"];
+    $data = json_encode($value["data"],JSON_UNESCAPED_UNICODE);
+    $createDate = $value["createDate"];
+    $status = $value["status"];
 
 
 
     if($id != null) {
         print("Update");
-        $updateSQL = "UPDATE `RequestTemplate` SET `name`='".$name."',`type`='".$type."',`inputDataProps`='".$inputDataProps."',`options`='".$options."' WHERE `id`='".$id."'";
+        $updateSQL = "UPDATE `Request` SET `template`='".$template."',`data`='".$data."',`create_date`='".$createDate."',`status`='".$status."' WHERE `id`='".$id."'";
         $result = mysqli_query($conn, $updateSQL);
 
 
     } else {
         print("Create");
-        $createSQL = "INSERT INTO `RequestTemplate`(`name`, `type`, `inputDataProps`, `options`) VALUES ('$name','$type','$inputDataProps','$options')";
+        $createSQL = "INSERT INTO `Request`(`template`, `data`, `create_date`, `status`) VALUES ('$template','$data','$createDate','$status')";
         print("<br>");
         mysqli_query($conn, $createSQL);
         print(mysqli_errno($conn) . ": " . mysqli_error($conn));

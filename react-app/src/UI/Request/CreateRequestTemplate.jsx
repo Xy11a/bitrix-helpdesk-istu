@@ -2,15 +2,24 @@ import React, {useState,useEffect} from 'react';
 import Block from "../Block/Block";
 import Request from "./Request";
 import CreateInput from "./CreateInput";
+import RequestTemplateService from "../../API/RequestTemplateService";
+import DeleteInput from "./DeleteInput";
+import ToolBar from "../CRUD/ControlPanel/ToolBar";
+import Icon from "../Icon/Icon";
 
 
-const CreateRequestTemplate = ({template,updateRequestTemplate}) => {
+const CreateRequestTemplate = ({template, setSelection, updateRequestTemplate,read}) => {
 
     const [createInputType, setCreateInputType] = useState("text");
+    const [panel,setPanel] = useState("create")
 
     const updateOptions = (newOptions) => {
         template.options = newOptions
         updateRequestTemplate(template.id,template)
+    }
+
+    const submitTemplate = async () => {
+      RequestTemplateService.addRequestTemplate(template).then(()=> {read(); setSelection(null)})
     }
 
 
@@ -55,19 +64,48 @@ const CreateRequestTemplate = ({template,updateRequestTemplate}) => {
         )
     }
 
+    const InputsPanel = () => {
+      switch (panel) {
+          case "create":
+              return <CreateInputsButtons/>
+          case "option":
+              return <RequestOption/>
+          case "delete":
+              return <DeleteInput template={template} updateTemplate={updateRequestTemplate}/>
+      }
+    }
 
 
     return (
         <div>
             <div className='d-flex align-items-stretch justify-content-between'>
                 <Block className='w-75 border border-dark bg-white rounded-3 overflow-x-hidden'>
-                    <Request template={template}/>
+                    <Request template={template} isTest={true}/>
+                    <div className='px-2 pb-2'><button className='btn btn-primary w-100' onClick={()=>{
+                        submitTemplate();
+                    }}>Сохранить шаблон</button></div>
                 </Block>
                 <Block className='w-25 border border-dark bg-white rounded-3 overflow-x-hidden'>
                     <div className='d-flex flex-column'>
                         <div className='d-flex justify-content-center border-bottom border-opacity-50 '><h2>Панель полей ввода</h2></div>
-                        <RequestOption/>
-                        <CreateInputsButtons/>
+
+                        <div className='px-2'>
+                            <ToolBar>
+                                <button className="btn btn-primary my-1" onClick={() => {setPanel("create")}}>
+                                    <Icon width={24} height={24} src={"./files/create.svg"}/>
+                                </button>
+                                <button className="btn btn-primary my-1" onClick={() => {setPanel("option")}}>
+                                    <Icon width={24} height={24} src={"./files/gear.svg"}/>
+                                </button>
+                                <button className="btn btn-primary my-1" onClick={() => {setPanel("delete")}}>
+                                    <Icon width={24} height={24} src={"./files/delete.svg"}/>
+                                </button>
+                            </ToolBar>
+                        </div>
+
+                        <InputsPanel/>
+
+
                     </div>
                 </Block>
             </div>

@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export default class RequestTemplate {
+export default class RequestTemplateService {
 
     static apiLink = "http://xyla.istu.webappz.ru/asu/kursach/api/requestTemplate/";
 
@@ -14,8 +14,7 @@ export default class RequestTemplate {
                     type: el.type,
                     id: el.id,
                     options: JSON.parse(el.options),
-                    inputDataProps: JSON.parse(el.inputDataProps),
-                    data: JSON.parse(el.data)
+                    inputDataProps: JSON.parse(el.inputDataProps)
                 }
             )
         })

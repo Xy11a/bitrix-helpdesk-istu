@@ -1,12 +1,12 @@
 import React from 'react';
-import RequestTemplate from "../../../API/RequestTemplate";
+import RequestTemplateService from "../../../API/RequestTemplateService";
 
 
 const DeleteRequestTemplateForm = ({selectedItem,read}) => {
 
     const submitFunc = async (e) => {
         e.preventDefault();
-        RequestTemplate.deleteRequestTemplate(selectedItem.id).then((res) => read())
+        RequestTemplateService.deleteRequestTemplate(selectedItem.id).then((res) => read())
     }
 
     return (

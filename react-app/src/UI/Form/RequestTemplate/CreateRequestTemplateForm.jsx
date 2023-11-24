@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import RequestTemplate from "../../../API/RequestTemplate";
+import RequestTemplateService from "../../../API/RequestTemplateService";
 
 let canCreate = true;
 let requestTemplate = {
@@ -7,8 +7,7 @@ let requestTemplate = {
     type: "Программное обеспечение",
     id: null,
     options: {cabinets: false, note: false},
-    inputDataProps: [],
-    data: []
+    inputDataProps: []
 }
 
 let requestTypes = ["Программное обеспечение","Учетная деятельность","Техническое обслуживание","Подключение к системе / создание УЗ"]
@@ -20,7 +19,7 @@ const CreateRequestTemplateForm = ({list,read}) => {
     const submitForm = async (e) => {
         e.preventDefault()
         if(canCreate) {
-            RequestTemplate.addRequestTemplate(template).then((res)=> read())
+            RequestTemplateService.addRequestTemplate(template).then((res)=> read())
         }
 
     }
