@@ -31,8 +31,9 @@ const CreateRequestPage = () => {
 
     return (
         <div>
-            <Block><h1 className='text-center'>Выберите заявку</h1></Block>
+            <Block><h1 className='text-center'>Создать заявку</h1></Block>
             <Block className='my-1 border border-dark bg-white rounded-3 p-2'>
+                <h4 className='text-center'>Выберите шаблон заявки</h4>
                 {requestTemplates.length === 0 ? "Список пуст" :
                     <SearchList setSelectedItem={setSelectedItem} headers={dataProps.headers} list={requestTemplates}
                                 sortFunction={dataProps.sortFunc} filterFunction={dataProps.filterFunc}/>

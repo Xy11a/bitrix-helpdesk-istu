@@ -76,8 +76,9 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
                     if(setTooltipText!== undefined || setTooltipVisible !== undefined || setTooltipPosition !== undefined)
                     {
                         let mousePos = e.target.getStage().getPointerPosition();
+                        let scale = e.target.getStage().getAbsoluteScale()
                         setTooltipVisible(true)
-                        setTooltipPosition({x: mousePos.x+10,y:mousePos.y-10})
+                        setTooltipPosition({x: mousePos.x/scale.x+10,y:mousePos.y-10})
                         setTooltipText(componentName)
                     }
 

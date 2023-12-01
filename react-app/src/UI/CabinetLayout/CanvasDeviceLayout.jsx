@@ -54,19 +54,31 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
     const divRef = useRef(null)
-    const [containerWidth, setContainerWidth] = useState(0)
+    const [containerWidth, setContainerWidth] = useState(700)
+    const [containerHeight, setContainerHeight] = useState(450)
     const [devicesList, setDevicesList] = React.useState([]);
     const [selectedId, selectShape] = React.useState(null);
     const [objectList, setObjectList] = useState([]);
+    const [scale, setScale] = useState({x:1,y:1})
 
 
     useEffect(() => {
         getAll(cabinet, setDevicesList)
         getAllObjects(cabinet, objectList, setObjectList)
         if (divRef.current?.offsetWidth) {
+            // let sX = divRef.current.offsetWidth/divRef.current.firstChild.offsetWidth
+            // let sY = divRef.current.offsetHeight/divRef.current.firstChild.offsetHeight
+            //
+            // setContainerWidth(divRef.current.firstChild.offsetWidth * sX)
+            // setContainerHeight(divRef.current.firstChild.offsetHeight * sY)
+            // setScale({x:sX,y:sY})
             setContainerWidth(divRef.current.firstChild.offsetWidth)
+
         }
-    }, [cabinet])
+
+
+
+    }, [cabinet,divRef.current?.firstChild.offsetWidth])
 
 
     const checkDeselect = (e) => {
@@ -144,10 +156,10 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
         <div>
             <div ref={divRef} className='d-flex align-items-stretch justify-content-between'>
                 <Block className='w-75 border border-dark bg-white rounded-3 overflow-x-hidden'>
-                    <Stage className='border border-black border-opacity-50' width={containerWidth} height={450}
+                    <Stage  scale={scale} className='border border-black border-opacity-50' width={containerWidth} height={containerHeight}
                            onMouseDown={checkDeselect} onTouchStart={checkDeselect}>
                         <Layer>
-                            <Image width={containerWidth} height={450} image={backgroundImage}/>
+                            <Image width={containerWidth} height={containerHeight} image={backgroundImage}/>
                         </Layer>
                         <Layer>
                             {objectList.map((object) => {
@@ -189,7 +201,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                         </Layer>
                         <Layer>
                             <Text text={tooltipText} fontFamily='Calibri' fontSize={18} padding={5} fill='black'
-                                  stroke='black' visible={tooltipVisible} x={tooltipPosition.x} y={tooltipPosition.y}/>
+                                  stroke='black' visible={tooltipVisible} x={tooltipPosition.x} y={tooltipPosition.y*scale.x}/>
                         </Layer>
                     </Stage>
                 </Block>

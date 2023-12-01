@@ -13,11 +13,12 @@ const RequestCabinetInput = () => {
 
     const [cabinet, setCabinet] = useState(cabinets[0])
 
-        //TODO узнать почему ломаються объекты
+
 
     return (
         <div className='mt-2'>
-            <select className='form-select' value={cabinet} onChange={(e)=> setCabinet(e.target.value)} >
+            <h3>Выберете кабинет:</h3>
+            <select className='form-select w-25' value={cabinet} onChange={(e)=> setCabinet(e.target.value)} >
                 {cabinets.map((cabinetOption,index)=> {
                     return (
                         <option key={index}>
@@ -27,8 +28,7 @@ const RequestCabinetInput = () => {
                 })}
             </select>
 
-
-            <div>{cabinet}</div>
+            <h4>Выберите ИТ-технику:</h4>
             <div>
                 <CabinetDeviceLayoutSelect cabinet={cabinetsJson.find((el)=> el.number === cabinet)} />
             </div>

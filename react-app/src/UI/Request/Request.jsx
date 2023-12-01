@@ -49,9 +49,9 @@ const Request = ({template,setTemplate, isReadOnly, isTest}) => {
                 {template.options.note ? <AddNote/> : ""}
                 {template.options.cabinets ? <RequestCabinetInput/> : ""}
                 <button className='btn btn-primary w-100 mt-2'>
-                    {isTest ? "Протестировать форму" : "Отправить форму"}
+                    {isTest ? "Протестировать форму" : "Отправить заявку"}
                 </button>
-                {message ? <div className='bg-success text-white w-100 mt-2 p-2 d-flex justify-content-center rounded-3'>Форма успешно отправлена</div> : ""}
+                {message ? <div className='bg-success text-white w-100 mt-2 p-2 d-flex justify-content-center rounded-3'>Заявка успешно отправлена</div> : ""}
             </form>
         </div>
     );
@@ -61,23 +61,23 @@ const Request = ({template,setTemplate, isReadOnly, isTest}) => {
 const ContactsInputs = () => {
     return (
         <div>
-            <div>
-                <div>ФИО заявителя:</div>
-                <input className='form-control' type={"text"} name={'fio'} defaultValue={"Иванов И.И."}
+            <div className='d-flex mt-1 align-items-center'>
+                <label>ФИО заявителя:</label>
+                <input className='form-control w-25' type={"text"} name={'fio'} defaultValue={"Иванов И.И."}
                        readOnly={true}/>
             </div>
-            <div>
-                <div>Номер заявителя:</div>
+            <div className='d-flex mt-1 align-items-center'>
+                <label>Номер заявителя:</label>
                 <input className='form-control w-25' type={'tel'} name={'telephone'} defaultValue={"+79225777483"}
                        readOnly={true}/>
             </div>
-            <div>
-                <div>Email заявителя:</div>
+            <div className='d-flex mt-1 align-items-center'>
+                <label>Email заявителя:</label>
                 <input className='form-control w-25' type={"text"} name={'mail'} defaultValue={"Ivan.durak@mail.ru"}
                        readOnly={true}/>
             </div>
-            <div>
-                <div>Должность заявителя:</div>
+            <div className='d-flex mt-1 align-items-center'>
+                <label>Должность заявителя:</label>
                 <input className='form-control w-25' type={"text"} name={'job'} defaultValue={"Сотрудник ИТ-отдела"}
                        readOnly={true}/>
             </div>
@@ -105,7 +105,7 @@ const CustomInputs = ({inputDataProps}) => {
 
                         case "text":
                             return (
-                                <div key={index}>
+                                <div key={index} className='d-flex mt-1 align-items-center' >
                                     <div key={"label" + index}>{inputElement.label}</div>
                                     <input key={"input" + index} className='form-control' type={inputElement.type}
                                            name={inputElement.type + countType(inputElement.type)}
@@ -114,7 +114,7 @@ const CustomInputs = ({inputDataProps}) => {
                             )
                         case "number":
                             return (
-                                <div key={index}>
+                                <div key={index} className='d-flex mt-1 align-items-center'>
                                     <div key={"label" + index}>{inputElement.label}</div>
                                     <input key={"input" + index} className='form-control' type={inputElement.type}
                                            name={inputElement.type + countType(inputElement.type)}
@@ -123,7 +123,7 @@ const CustomInputs = ({inputDataProps}) => {
                             )
                         case "date":
                             return (
-                                <div key={index}>
+                                <div key={index} className='d-flex mt-1 align-items-center'>
                                     <div key={"label" + index}>{inputElement.label}</div>
                                     <input key={"input" + index} className='form-control w-25' type={inputElement.type}
                                            name={inputElement.type + countType(inputElement.type)} required={true}/>
@@ -140,7 +140,7 @@ const CustomInputs = ({inputDataProps}) => {
                             )
                         case "select":
                             return (
-                                <div key={index}>
+                                <div key={index} className='d-flex mt-1 align-items-center'>
                                     <div key={"label" + index}>{inputElement.label}</div>
                                     <select key={"select" + index} className='form-select'
                                             name={inputElement.type + countType(inputElement.type)} required={true}>

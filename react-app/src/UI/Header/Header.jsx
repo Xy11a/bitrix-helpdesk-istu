@@ -2,11 +2,23 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import HeaderLinkUI from "./HeaderLinkUI";
-import Badge from "../Badge/Badge";
 
-let lockImg = <img width={16} height={16} src={"/files/lock.svg"}></img>
+let userTemplateAdmin = {
+    id:"1",
+    name: "Петров И.И.",
+    number: "+79225777483",
+    email: "Ivan.durak@mail.ru",
+    authority: "admin"
+}
+let userTemplateUser = {
+    id:"1",
+    name: "Иванов И.И.",
+    number: "+79225777483",
+    email: "Ivan.durak@mail.ru",
+    authority: "user"
+}
 
-const Header = ({page,setPage}) => {
+const Header = ({page,setPage, user, setUser}) => {
     return (
         <nav className="navbar navbar-expand-lg sticky-top bg-body-tertiary">
             <div className="container-fluid">
@@ -24,37 +36,44 @@ const Header = ({page,setPage}) => {
                                     { ['request-create','request-manage','program-request','account-request','connection-request','maintenance-request'].includes(page) ? <b> Заявки</b> : <>Заявки</>}
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-manage' page={page} setPage={setPage}>Управление активными заявками</HeaderLinkUI>
                                     <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-create' page={page} setPage={setPage}>Создать заявку</HeaderLinkUI>
+                                    <HeaderLinkUI className={user.authority !== "user" ? 'dropdown-item nav-link' : 'dropdown-item nav-link disabled'} pageLink='request-manage' page={page} setPage={setPage}>Управление активными заявками</HeaderLinkUI>
                                 </ul>
                             </div>
                             <div className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    { ['create-cabinet'].includes(page) ? <b>Кабинет</b> : <>Кабинет</>}
+                                <a className={user.authority !== "user" ? 'nav-link dropdown-toggle' : 'nav-link dropdown-toggle disabled'} href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    { ['create-cabinet'].includes(page) ? <b>Кабинеты</b> : <>Кабинеты</>}
 
                                 </a>
                                 <ul className="dropdown-menu">
                                     <HeaderLinkUI className='dropdown-item' pageLink='create-cabinet' page={page} setPage={setPage}>Открыть панель управления кабинетами</HeaderLinkUI>
                                 </ul>
                             </div>
-                            <Badge badgeColor={"bg-dark"} badgeContent={lockImg} translateMiddle={true}>
-                                <div className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        { ['request-constructor'].includes(page) ? <b>Конструктор заявок</b> : <>Конструктор заявок</>}
+                            <div className="nav-item dropdown">
+                                <a className={user.authority !== "user" ? 'nav-link dropdown-toggle' : 'nav-link dropdown-toggle disabled'} href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    { ['request-constructor'].includes(page) ? <b>Конструктор заявок</b> : <>Конструктор заявок</>}
 
-                                    </a>
-                                    <ul className="dropdown-menu">
-                                        <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-constructor' page={page} setPage={setPage}>Открыть панель управления шаблонами заявок</HeaderLinkUI>
-                                    </ul>
-                                </div>
-                            </Badge>
+                                </a>
+                                <ul className="dropdown-menu">
+                                    <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-constructor' page={page} setPage={setPage}>Открыть панель управления шаблонами заявок</HeaderLinkUI>
+                                </ul>
+                            </div>
                         </div>
                     </ul>
                     <div className="d-flex flex-fill justify-content-end">
                         <div className="nav-item dropdown">
-                            <div className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Администатор: Иванов И.И.</div>
+                            <div className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {user.authority === "admin" ? <span className={'text-danger'}>Администратор</span> : <span>Пользователь</span>}: Иванов И.И.
+                            </div>
                             <ul className="dropdown-menu">
                                 <div className='dropdown-item'>Профиль</div>
+                                <div className='dropdown-item' onClick={()=>{
+
+                                    if(user.authority === "user") {
+                                        setUser(userTemplateAdmin)
+                                    } else setUser(userTemplateUser)
+
+                                }}>ДЕМО: Сменить права</div>
                                 <div className='dropdown-item'>Выйти</div>
                             </ul>
                         </div>

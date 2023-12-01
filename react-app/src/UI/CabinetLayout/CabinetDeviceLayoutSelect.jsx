@@ -5,7 +5,6 @@ import CanvasComponent from "./CanvasComponent";
 import {getAllObjects} from "./CanvasCabinetLayout";
 import DeviceService from "../../API/DeviceService";
 import {parseDevices} from "./CanvasDeviceLayout";
-import Icon from "../Icon/Icon";
 
 
 let deviceTypes = [
@@ -162,5 +161,8 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
         </div>
     );
 };
+
+
+
 
 export default CabinetDeviceLayoutSelect;
