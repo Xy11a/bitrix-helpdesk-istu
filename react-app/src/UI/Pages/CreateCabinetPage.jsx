@@ -9,7 +9,7 @@ import CabinetDeleteForm from "../Form/Cabinet/CabinetDeleteForm";
 
 let cabinetsJson = await CabinetService.getAllCabinets()
 let dataProps = {
-    headers: ["Кабинет", "Планировка", "Количество устройств"],
+    headers: ["№ Кабинета", "Планировка", "Количество устройств"],
     sortFunc: (a,b)=>{return a.number.localeCompare(b.number)},
     filterFunc: (item,searchInput) => {return item.number.toLowerCase().includes(searchInput.toLowerCase())},
 }
@@ -64,6 +64,7 @@ const CreateCabinetPage = () => {
                   dataProps={dataProps}
                   setSelection={setSelectedItem}
                   CRUDToolBarFunction={crudToolBar}
+                  selection={selectedItem}
             />
 
 

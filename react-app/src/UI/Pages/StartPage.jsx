@@ -57,15 +57,15 @@ const StartPage = ({user,setPage}) => {
                     <Block>
                         <h4 className='text-center'>Заявки</h4>
                         <button className={'btn btn-primary w-100 mt-2'} onClick={()=> setPage('request-create')}>Создать заявку</button>
-                        <button className={'btn btn-primary w-100 mt-2'} onClick={()=> setPage('request-manage')} disabled={user.authority === "user"}>Управления активными заявками</button>
+                        <button className={'btn btn-primary w-100 mt-2'} onClick={()=> setPage('request-manage')} disabled={user.authority === "user"}>Активные заявки</button>
                     </Block>
                     <Block>
                         <h4 className='text-center'>Кабинеты</h4>
-                        <button className={'btn btn-primary w-100 mt-2'} onClick={()=> setPage('create-cabinet')} disabled={user.authority === "user"}>Открыть панель управления кабинетами</button>
+                        <button className={'btn btn-primary w-100 mt-2'} onClick={()=> setPage('create-cabinet')} disabled={user.authority === "user"}>Управление интерактивными кабинетами</button>
                     </Block>
                     <Block>
                         <h4 className='text-center'>Конструктор заявок</h4>
-                        <button className={'btn btn-primary w-100 mt-2'} disabled={user.authority === "user"} onClick={()=> setPage('request-constructor')}>Открыть панель управления шаблонами заявок</button>
+                        <button className={'btn btn-primary w-100 mt-2'} disabled={user.authority === "user"} onClick={()=> setPage('request-constructor')}>Открыть конструктор заявок</button>
                     </Block>
                 </div>
             </div>

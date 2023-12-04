@@ -5,7 +5,7 @@ import {Tooltip} from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css'
 
 
-const ControlPanel = ({CRUDToolBarFunction}) => {
+const ControlPanel = ({CRUDToolBarFunction, selection}) => {
 
     const [panel, setPanel] = useState('create');
 
@@ -22,14 +22,14 @@ const ControlPanel = ({CRUDToolBarFunction}) => {
                 <button data-tooltip-id="tooltip-edit" data-tooltip-content="Редактировать элемент"
                         data-tooltip-place="top" className="btn btn-primary my-1" onClick={() => {
                     setPanel("update")
-                }}>
+                }} disabled={selection === ""}>
                     <Tooltip id='tooltip-edit'/>
                     <Icon width={24} height={24} src={"./files/edit.svg"}/>
                 </button>
                 <button data-tooltip-id="tooltip-delete" data-tooltip-content="Удалить элемент" data-tooltip-place="top"
                         className="btn btn-primary my-1" onClick={() => {
                     setPanel("delete")
-                }}>
+                }} disabled={selection === ""}>
                     <Tooltip id='tooltip-delete'/>
                     <Icon width={24} height={24} src={"./files/delete.svg"}/>
                 </button>

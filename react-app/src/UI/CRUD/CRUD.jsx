@@ -4,7 +4,7 @@ import SearchList from "./SearchList/SearchList";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import 'react-tooltip/dist/react-tooltip.css'
 
-const CRUD = ({data,dataProps,setSelection, CRUDToolBarFunction}) => {
+const CRUD = ({data,dataProps,setSelection, CRUDToolBarFunction, selection}) => {
 
     return (
         <div className='w-100 h-100'>
@@ -18,7 +18,7 @@ const CRUD = ({data,dataProps,setSelection, CRUDToolBarFunction}) => {
                     />
                 </Block>
                 <Block className='w-25  p-1 border border-dark bg-white rounded-3'>
-                    <ControlPanel CRUDToolBarFunction={CRUDToolBarFunction} />
+                    <ControlPanel CRUDToolBarFunction={CRUDToolBarFunction} selection={selection} />
                 </Block>
             </div>
         </div>

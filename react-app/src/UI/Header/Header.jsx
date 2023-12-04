@@ -37,7 +37,7 @@ const Header = ({page,setPage, user, setUser}) => {
                                 </a>
                                 <ul className="dropdown-menu">
                                     <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-create' page={page} setPage={setPage}>Создать заявку</HeaderLinkUI>
-                                    <HeaderLinkUI className={user.authority !== "user" ? 'dropdown-item nav-link' : 'dropdown-item nav-link disabled'} pageLink='request-manage' page={page} setPage={setPage}>Управление активными заявками</HeaderLinkUI>
+                                    <HeaderLinkUI className={user.authority !== "user" ? 'dropdown-item nav-link' : 'dropdown-item nav-link disabled'} pageLink='request-manage' page={page} setPage={setPage}>Активные заявки</HeaderLinkUI>
                                 </ul>
                             </div>
                             <div className="nav-item dropdown">
@@ -46,7 +46,7 @@ const Header = ({page,setPage, user, setUser}) => {
 
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <HeaderLinkUI className='dropdown-item' pageLink='create-cabinet' page={page} setPage={setPage}>Открыть панель управления кабинетами</HeaderLinkUI>
+                                    <HeaderLinkUI className='dropdown-item' pageLink='create-cabinet' page={page} setPage={setPage}>Управление интерактивными кабинетами</HeaderLinkUI>
                                 </ul>
                             </div>
                             <div className="nav-item dropdown">
@@ -55,7 +55,7 @@ const Header = ({page,setPage, user, setUser}) => {
 
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-constructor' page={page} setPage={setPage}>Открыть панель управления шаблонами заявок</HeaderLinkUI>
+                                    <HeaderLinkUI className='dropdown-item nav-link' pageLink='request-constructor' page={page} setPage={setPage}>Открыть конструктор заявок</HeaderLinkUI>
                                 </ul>
                             </div>
                         </div>
