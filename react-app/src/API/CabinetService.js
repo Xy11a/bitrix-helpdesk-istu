@@ -31,4 +31,9 @@ export default class CabinetService {
         const del = await axios.post(this.apiLink + "deleteCabinet.php", json)
         return del
     }
+
+    static async editCabinet(oldName,newName) {
+        const edit = await axios.post(this.apiLink + "editCabinet.php", {oldName:oldName,newName: newName})
+        return edit
+    }
 }

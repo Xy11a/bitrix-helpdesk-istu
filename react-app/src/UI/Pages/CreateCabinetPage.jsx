@@ -41,14 +41,16 @@ const CreateCabinetPage = () => {
     }
 
     const crudToolBar = (panel) => {
+        if(selectedItem === '') return <CabinetCreateForm cabinetData={cabinetData} createCabinet={createCabinet} readCabinets={readCabinets} />
+
         switch (panel) {
             case "create":
                 return <CabinetCreateForm cabinetData={cabinetData} createCabinet={createCabinet} readCabinets={readCabinets} />
             case "update":
                 //TODO Доделать редактирование кабинета
-                return <CabinetEditForm cabinet={selectedItem} updateCabinet={updateCabinet} />
+                return <CabinetEditForm cabinet={selectedItem}  readCabinets={readCabinets} setSelection={setSelectedItem} cabinetData={cabinetData} />
             case "delete":
-                return <CabinetDeleteForm selection={selectedItem} deleteFunction={deleteCabinet}/>
+                return <CabinetDeleteForm selection={selectedItem} deleteFunction={deleteCabinet} setSelection={setSelectedItem}/>
         }
     }
 
@@ -69,7 +71,7 @@ const CreateCabinetPage = () => {
 
 
 
-            <CabinetLayout selectedCabinet={selectedItem} updateCabinets={readCabinets} />
+            <CabinetLayout selectedCabinet={selectedItem} updateCabinets={readCabinets}  />
 
             <Block>
                 <div>TODO:</div>

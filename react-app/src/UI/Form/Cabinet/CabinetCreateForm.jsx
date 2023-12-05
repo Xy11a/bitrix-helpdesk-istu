@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import CabinetService from "../../../API/CabinetService";
 
 const CabinetCreateForm = ({cabinetData, readCabinets}) => {
@@ -6,6 +6,8 @@ const CabinetCreateForm = ({cabinetData, readCabinets}) => {
     const [cabName, setCabName] = useState("")
     const [corpus, setCorpus] = useState("А")
     const [fileSVG, setFileSVG] = useState(null)
+    const [message, setMessage] = useState(false)
+    const fileIntRef = useRef()
 
     let checkNumber = false;
     let checkFileType = false;
@@ -14,8 +16,6 @@ const CabinetCreateForm = ({cabinetData, readCabinets}) => {
     function submitCabinet(e, corpus, cabName) {
         e.preventDefault();
         let file = checkFileType ? fileSVG : null
-
-
 
 
         if (checkNumber === true) {
@@ -27,8 +27,18 @@ const CabinetCreateForm = ({cabinetData, readCabinets}) => {
                     formData.append("file", file);
                     formData.append("cabinet", corpus + cabName)
                     CabinetService.addSVG(formData)
-                })
-            readCabinets()
+                }).then(() => {
+                    setMessage(true)
+                    setTimeout(() => {
+                        setMessage(false);
+                        fileIntRef.current.value="";
+                        setFileSVG(null)
+                        setCabName("")
+                        readCabinets()
+                    }, 3000)
+                }
+            )
+
         }
 
 
@@ -67,14 +77,17 @@ const CabinetCreateForm = ({cabinetData, readCabinets}) => {
             <label>План SVG (Необязательно):</label>
             <input onChange={(e) => {
                 setFileSVG(e.target.files[0]);
-            }} className='form-control' type={"file"} name={"plan"} accept=".svg" placeholder="Загрузите SVG"/>
+            }} ref={fileIntRef} className='form-control' type={"file"} name={"plan"} accept=".svg" placeholder="Загрузите SVG"/>
 
             {checkFile(fileSVG)}
 
+            {}
+
             <input type={"hidden"} name={"id"}/>
             <div className="d-flex w-100 justify-content-center align-items-center mt-2">
-                <button className="w-75 btn btn-primary" type={"submit"}>Создать</button>
+                <button className="w-100 btn btn-primary" type={"submit"} disabled={!checkNumber}>Создать</button>
             </div>
+            {message ? <div className='bg-success text-white w-100 mt-2 p-2 d-flex justify-content-center rounded-3'>Кабинет успешно создан</div> : ""}
         </form>
     );
 
