@@ -81,8 +81,6 @@ const CabinetCreateForm = ({cabinetData, readCabinets}) => {
 
             {checkFile(fileSVG)}
 
-            {}
-
             <input type={"hidden"} name={"id"}/>
             <div className="d-flex w-100 justify-content-center align-items-center mt-2">
                 <button className="w-100 btn btn-primary" type={"submit"} disabled={!checkNumber}>Создать</button>
