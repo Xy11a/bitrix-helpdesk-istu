@@ -7,8 +7,8 @@ const CabinetEditForm = ({cabinet, cabinetData, readCabinets, setSelection}) => 
     const [cabName, setCabName] = useState(cabinet.number.slice(1))
     const [corpus, setCorpus] = useState(cabinet.number[0])
     const [fileSVG, setFileSVG] = useState(null)
-    const [cabinetLink, setCabinetLink] = useState('')
     const [message, setMessage] = useState(false)
+    const [fileMessage, setFileMessage] = useState(false)
 
     useEffect(() => {
         setCorpus(cabinet.number[0])
@@ -45,10 +45,17 @@ const CabinetEditForm = ({cabinet, cabinetData, readCabinets, setSelection}) => 
     const checkFile = () => {
         if (fileSVG === null) return "";
         if (!fileSVG.name.includes(".svg")) {
-            return <div className="bg-warning my-1 p-2 rounded-3">Неверный формат файла. При создании кабинета будет
-                загружен план по умолчанию</div>
+            return <div className="bg-warning my-1 p-2 rounded-3">Неверный формат файла.</div>
         }
         return <div className="bg-success text-white bg-opacity-75 my-1 p-2 rounded-3">ОК</div>;
+    }
+
+    const checkFileBool = () => {
+        if (fileSVG === null) return false;
+        if (!fileSVG.name.includes(".svg")) {
+            return false
+        }
+        return true
     }
 
 
@@ -59,6 +66,25 @@ const CabinetEditForm = ({cabinet, cabinetData, readCabinets, setSelection}) => 
                 setMessage(true);
                 setTimeout(() => {
                     setMessage(false)
+                    readCabinets()
+                    setSelection('')
+                }, 3000)
+            }
+        )
+    }
+
+    const submitFileForm = (e) => {
+        e.preventDefault()
+        let file = checkFileBool() ? fileSVG : null
+
+        let formData = new FormData()
+        formData.append("file", file);
+        formData.append("cabinet", corpus + cabName)
+        CabinetService.addSVG(formData).then(
+            () => {
+                setFileMessage(true);
+                setTimeout(() => {
+                    setFileMessage(false)
                     readCabinets()
                     setSelection('')
                 }, 3000)
@@ -113,16 +139,21 @@ const CabinetEditForm = ({cabinet, cabinetData, readCabinets, setSelection}) => 
                 }
             </form>
             <hr/>
-            <form className='mt-3'>
+            <form onSubmit={(e)=> {submitFileForm(e)}} className='mt-3'>
                 <h6 className='text-center my-0'>Редактировать план кабинета</h6>
                 <label>План SVG:</label>
                 <input className='form-control' type={"file"} name={"plan"} accept={'.svg'}
-                       onChange={(e) => setCabinetLink(e.target.value)} placeholder="Загрузите SVG"/>
+                       onChange={(e) => setFileSVG(e.target.files[0])} placeholder="Загрузите SVG"/>
 
                 {checkFile()}
                 <div className="d-flex w-100 justify-content-center align-items-center mt-2">
-                    <button className="w-100 btn btn-primary" type={"submit"}>Редактировать план</button>
+                    <button className="w-100 btn btn-primary" type={"submit"} disabled={!checkFileBool()}>Редактировать план</button>
                 </div>
+                {
+                    fileMessage ? <div
+                        className='bg-success text-white w-100 mt-2 p-2 d-flex justify-content-center rounded-3'>План
+                        кабинета успешно обновлен</div> : ""
+                }
             </form>
         </div>
     );

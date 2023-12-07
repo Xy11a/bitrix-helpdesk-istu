@@ -14,7 +14,7 @@ const DeleteInput = ({template, updateTemplate}) => {
         <div className='border border-black border-opacity-50 p-2 m-2 rounded-3'>
             <h3 className='text-center'>Удалить поле ввода</h3>
             {
-                template.inputDataProps.length === 0 ? <h6 className='text-center'>Список созданных полей <span className='bg-warning'>пуст!</span></h6> :
+                template.inputDataProps.length === 0 ? <h6 className='text-center'>Список пользовательских полей <span className='bg-warning'>пуст!</span></h6> :
                     <div>
                         <label>Выберите поле для удаления:</label>
                         <select className='form-select' value={selectedInput} onChange={(e)=>setSelectedInput(e.target.value)}>

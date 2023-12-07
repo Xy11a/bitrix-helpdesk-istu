@@ -14,10 +14,10 @@ const CabinetLayout = ({selectedCabinet, updateCabinets}) => {
                 <div className="p-2">
                     <h2 className="text-center">Планировка кабинета {selectedCabinet.number}</h2>
 
-                    <label>Выберите редактор планировки</label>
+                    <label>Выберите редактор</label>
                     <select  className="form-select bg-primary bg-opacity-25" onChange={(e)=> {setPlanMode(e.target.value)}}>
-                        <option value={"device-layout"}>Редактор устройств в кабинете</option>
-                        <option value={"cabinet-layout"}>Редактор кабинета</option>
+                        <option value={"device-layout"}>Редактор ИТ-техники в кабинете</option>
+                        <option value={"cabinet-layout"}>Редактор планировки кабинета</option>
                     </select>
                 </div>
             </Block>

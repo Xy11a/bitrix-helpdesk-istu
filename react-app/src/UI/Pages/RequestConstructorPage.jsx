@@ -53,13 +53,15 @@ const RequestConstructorPage = () => {
     }
 
     const CRUDToolbar = (panel) => {
+        if(selectedItem === "") return <CreateRequestTemplateForm list={requestTemplates} read={readRequestsTemplate}/>
+
         switch (panel) {
             case "create":
-                return <CreateRequestTemplateForm list={requestTemplates} read={readRequestsTemplate}/>
+                return  <CreateRequestTemplateForm list={requestTemplates} read={readRequestsTemplate}/>
             case "update":
-                return <div><EditRequestTemplateForm/></div>
+                return <EditRequestTemplateForm list={requestTemplates} read={readRequestsTemplate} selection={selectedItem} setSelection={setSelectedItem}/>
             case "delete":
-                return <div><DeleteRequestTemplateForm selectedItem={selectedItem} read={readRequestsTemplate}/></div>
+                return <div><DeleteRequestTemplateForm selectedItem={selectedItem} setSelectedItem={setSelectedItem} read={readRequestsTemplate}/></div>
         }
     }
 
@@ -69,7 +71,7 @@ const RequestConstructorPage = () => {
                 <h1 className="text-center">Конструктор шаблонов заявки</h1>
             </Block>
 
-            <CRUD data={requestTemplates} CRUDToolBarFunction={CRUDToolbar} dataProps={dataProps}
+            <CRUD data={requestTemplates} CRUDToolBarFunction={CRUDToolbar} dataProps={dataProps} selection={selectedItem}
                   setSelection={setSelectedItem}/>
 
             {selectedItem ? <CreateRequestTemplate template={selectedItem} setSelection={setSelectedItem}  updateRequestTemplate={updateRequests}  read={readRequestsTemplate}/> : <Block>Выберите шаблон</Block>}

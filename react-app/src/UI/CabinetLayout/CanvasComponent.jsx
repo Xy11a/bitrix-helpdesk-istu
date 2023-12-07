@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {Image, Rect, Transformer} from "react-konva";
 import useImage from "use-image";
 
-const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName, dragAble,strokable, onSelection}) => {
+const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,setTooltipText,setTooltipPosition, setTooltipVisible, componentName, dragAble,strokable, onSelection,isStoke}) => {
 
     const [image] = useImage(imageUrl);
-    const [stroke,setStroke] = useState(false);
+    const [stroke,setStroke] = useState(isStoke === undefined ? false : isStoke);
 
     const shapeRef = React.useRef();
     const trRef = React.useRef();
@@ -13,8 +13,10 @@ const CanvasComponent = ({ shapeProps, isSelected, onSelect, onChange, imageUrl,
     const onClick = () => {
         if(onSelect !== undefined) onSelect()
         if (strokable !== undefined){
-            onSelection(!stroke)
-            setStroke(!stroke)
+            if(isStoke === undefined){
+                onSelection(!stroke)
+                setStroke(!stroke)
+            }
         }
     }
 

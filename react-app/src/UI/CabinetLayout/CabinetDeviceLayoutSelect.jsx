@@ -42,7 +42,7 @@ let deviceTypes = [
 ]
 
 
-const CabinetDeviceLayoutSelect = ({cabinet}) => {
+const CabinetDeviceLayoutSelect = ({cabinet, devices, setDevices,isReadOnly}) => {
 
     const divRef = useRef(null)
     const [selectedId, selectShape] = React.useState(null);
@@ -113,15 +113,18 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
                                 shapeProps={rect.shapeProps}
                                 onSelection={(flag) => {
                                     if (flag) {
-                                        setSelectedDeviceList([...selectedDeviceList, rect.id])
+                                            setSelectedDeviceList([...selectedDeviceList, rect.id])
+                                            setDevices([...devices, rect.id])
                                     } else {
-                                        let newSelection = [...selectedDeviceList]
-                                        newSelection = newSelection.filter((el)=> el !== rect.id)
-                                        setSelectedDeviceList([...newSelection])
+                                            let newSelection = [...selectedDeviceList]
+                                            newSelection = newSelection.filter((el)=> el !== rect.id)
+                                            setSelectedDeviceList([...newSelection])
+                                            setDevices([...newSelection])
                                     }
                                     console.log(selectedDeviceList)
                                 }}
-                                strokable={true}
+                                strokable={!isReadOnly}
+                                isStoke={isReadOnly ? devices.includes(rect.id) : undefined}
                             />
                         );
                     })}
@@ -135,7 +138,7 @@ const CabinetDeviceLayoutSelect = ({cabinet}) => {
                 <table className='w-100'>
                     <tbody>
                     {
-                        devicesList.filter((el)=> selectedDeviceList.includes(el.id)).map((device, i) =>
+                        (isReadOnly ? devicesList.filter((el)=> devices.includes(el.id)) : devicesList.filter((el)=> selectedDeviceList.includes(el.id))).map((device, i) =>
                             <tr className='border border-black border-opacity-50 w-100' key={device.deviceName + "i"}>
                                 <td className='border border-black px-2'>{device.deviceName}</td>
                                 {

@@ -18,6 +18,7 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
     const [containerWidth,setContainerWidth] = useState(0)
     const [objectList, setObjectList] = useState([]);
     const [selectedId, selectShape] = useState(null);
+    const [successMes, setSuccessMes] = useState(false)
 
     ///////////////////////////////////////////////////////////////////////
 
@@ -76,6 +77,15 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
     }
 
 
+    const submitForm = (e) => {
+      e.preventDefault();
+      setSuccessMes(true)
+      CanvasObjectService.addCanvasObjectToCabinet(objectList)
+          .then(()=>{updateCabinets();
+      getAllObjects(cabinet,objectList,setObjectList);})
+        setTimeout(()=>{setSuccessMes(false)},2500)
+    }
+
     return (
         <div>
             <div ref={divRef} className='d-flex align-items-stretch justify-content-between'>
@@ -118,7 +128,7 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                 <Block className='w-25 border border-dark bg-white rounded-3'>
                     <div
                         className='d-flex p-1 justify-content-center align-items-center border-bottom border-black border-opacity-50'>
-                        <h4>Панель инструментов</h4></div>
+                        <h4>Панель примитивов</h4></div>
                     <div className='d-flex p-1 justify-content-between align-items-stretch flex-wrap'>
                         <button className='my-1 p-1 border border-dark btn btn-primary'
                                 style={{width: "100px", height: "100px"}} onClick={() => { createObject("Rectangle")
@@ -128,38 +138,43 @@ const CanvasCabinetLayout = ({cabinet,updateCabinets}) => {
                     </div>
                 </Block>
             </div>
-            <Block>
-                <form className='p-2' onSubmit={(e) => {
-                    e.preventDefault()
-                    console.log(objectList)
-                }}>
-                    <table className='w-100'>
-                        <tbody>
-                        {objectList.map((object, i) =>
-                            <tr className='border border-black border-opacity-50 w-100 rounded-3' key={i}>
-                                <td className='px-2'>{object.objectName}</td>
-                                {object.id ? <td colSpan={100}>
-                                        <div className='d-flex w-100 justify-content-end'>
-                                            <button type={"button"} className='btn btn-danger' onClick={()=> deleteObject(object.id,object.objectName)}>
-                                                <Icon height={24} width={24} src={"/files/delete.svg"}/>
-                                            </button>
-                                        </div>
-                                    </td> :
-                                    <td colSpan={100}>
-                                        <div className='d-flex w-100 justify-content-end'>
-                                            <button type={"button"} className='btn btn-primary' onClick={()=> deleteObject(null,object.objectName)}>
-                                                <Icon height={24} width={24} src={"/files/eraser.svg"} />
-                                            </button>
-                                        </div>
-                                    </td>}
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
+            {
+               objectList.length !== 0 ? <Block>
+                        <form className='p-2' onSubmit={(e) => {
+                            submitForm(e)
+                        }}>
+                            <table className='w-100'>
+                                <tbody>
+                                {objectList.map((object, i) =>
+                                    <tr className='border border-black border-opacity-50 w-100 rounded-3' key={i}>
+                                        <td className='px-2'>{object.objectName}</td>
+                                        {object.id ? <td colSpan={100}>
+                                                <div className='d-flex w-100 justify-content-end'>
+                                                    <button type={"button"} className='btn btn-danger' onClick={()=> deleteObject(object.id,object.objectName)}>
+                                                        <Icon height={24} width={24} src={"/files/delete.svg"}/>
+                                                    </button>
+                                                </div>
+                                            </td> :
+                                            <td colSpan={100}>
+                                                <div className='d-flex w-100 justify-content-end'>
+                                                    <button type={"button"} className='btn btn-primary' onClick={()=> deleteObject(null,object.objectName)}>
+                                                        <Icon height={24} width={24} src={"/files/eraser.svg"} />
+                                                    </button>
+                                                </div>
+                                            </td>}
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
 
-                    <button className="btn btn-primary w-100 my-1" type={"submit"} onClick={()=> {CanvasObjectService.addCanvasObjectToCabinet(objectList).then(()=>{updateCabinets(); getAllObjects(cabinet,objectList,setObjectList);})}}>Отправить</button>
-                </form>
-            </Block>
+                            <button className="btn btn-primary w-100 my-1" type={"submit"} >Отправить</button>
+                            {
+                                successMes ? <div className={'bg-success p-2 w-100 text-white rounded-3 d-flex justify-content-center'}>Планировка обновлена</div> : ""
+                            }
+                        </form>
+                    </Block>
+                    : ""
+            }
         </div>
     );
 };

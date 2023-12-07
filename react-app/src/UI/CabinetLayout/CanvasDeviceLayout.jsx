@@ -151,6 +151,18 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
         setDevicesList(newDeviceList)
     }
 
+    const submitForm = (e) => {
+        e.preventDefault()
+        DeviceService.addDeviceToCabinet(devicesList).then(()=>{
+            setErrorMessage(false)
+            setSuccessMessage(true)
+            updateCabinets();
+            setCanCreateDevice(true);
+            getAll(cabinet,setDevicesList);
+            setTimeout(()=>{ setSuccessMessage(false)}, 2000)
+        })
+    }
+
 
     return (
         <div>
@@ -208,7 +220,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                 <Block className='w-25 border border-dark bg-white rounded-3'>
                     <div
                         className='d-flex p-1 justify-content-center align-items-center border-bottom border-black border-opacity-50'>
-                        <h4>Панель инструментов</h4></div>
+                        <h4>Панель ИТ-техники</h4></div>
                     <div className='d-flex p-1 justify-content-between align-items-stretch flex-wrap'>
                         {deviceTypes.map((deviceType, i) =>
                             <button key={i} className='my-1 p-1 border border-dark btn btn-primary'
@@ -232,7 +244,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
             </div>
             <Block>
                 <form className='p-2' onSubmit={(e) => {
-                    e.preventDefault()
+                    submitForm(e)
                 }}>
                     <table className='w-100'>
                         <tbody>
@@ -272,15 +284,7 @@ const CanvasDeviceLayout = ({cabinet, updateCabinets}) => {
                         </tbody>
                     </table>
 
-                    <button className="btn btn-primary w-100 my-1" type={"submit"} onClick={
-                        ()=> {
-                            DeviceService.addDeviceToCabinet(devicesList).then(()=>{
-                                setErrorMessage(false)
-                                setSuccessMessage(true)
-                                updateCabinets();
-                                setCanCreateDevice(true);
-                                getAll(cabinet,setDevicesList);
-                            })}}>Отправить</button>
+                    <button className="btn btn-primary w-100 my-1" type={"submit"}>Отправить</button>
                     { successMessage ? <div className='p-2 bg-success text-white w-100 rounded-3 text-center'>Данные загружены!</div> : ""}
                 </form>
 
